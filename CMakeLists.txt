@@ -2,14 +2,14 @@ cmake_minimum_required(VERSION 3.25)
 project(collabvm-cpp-client)
 set(CMAKE_CXX_STANDARD 26)
 
-# Download and fetch hello_imgui
-if (NOT TARGET hello_imgui)
-    message(STATUS "Fetching hello_imgui")
-    include(FetchContent)
-    FetchContent_Declare(hello_imgui GIT_REPOSITORY https://github.com/pthom/hello_imgui.git GIT_TAG master)
-    FetchContent_MakeAvailable(hello_imgui)
-endif()
+# add dependencies
+include(cmake/CPM.cmake)
+include(cmake/zlib.cmake)
+include(cmake/mbedtls.cmake)
+include(cmake/ixwebsocket.cmake)
 
+#Get helloimgui
+CPMAddPackage("gh:pthom/hello_imgui@1.92.3")
 
 
 # Build your app
@@ -30,5 +30,7 @@ endif()
 
 
 # portable installation is the easiest way to install the app
-hello_imgui_add_app(colllabvm-cpp-client cvm_client_main.cpp)
+hello_imgui_add_app(collabvm-cpp-client cvm_client_main.cpp)
 
+target_compile_definitions(ixwebsocket PRIVATE IXWEBSOCKET_USE_MBED_TLS_MIN_VERSION_3)
+target_link_libraries(collabvm-cpp-client PRIVATE ixwebsocket)
