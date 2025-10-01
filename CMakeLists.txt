@@ -1,29 +1,15 @@
 cmake_minimum_required(VERSION 3.12)
-project(imgui_bundle_example_integration)
-set(CMAKE_CXX_STANDARD 17)
+project(collabvm-cpp-client)
+set(CMAKE_CXX_STANDARD 26)
 
+# add dependencies
+include(cmake/CPM.cmake)
+include(cmake/cpm/zlib.cmake)
+include(cmake/cpm/mbedtls.cmake)
+include(cmake/cpm/ixwebsocket.cmake)
 
-# Add imgui_bundle
-# =================
-# 1/  Option 1: if you added imgui_bundle in a subfolder, you can add it to your project with:
-if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui_bundle)
-    add_subdirectory(external/imgui_bundle)
-endif()
-
-## 2/  Option 2: simply fetch imgui_bundle during the build
-if (NOT TARGET imgui_bundle)
-    message(STATUS "Fetching imgui_bundle...")
-    include(FetchContent)
-    Set(FETCHCONTENT_QUIET FALSE)
-    FetchContent_Declare(imgui_bundle GIT_REPOSITORY https://github.com/pthom/imgui_bundle.git GIT_TAG main)
-    FetchContent_MakeAvailable(imgui_bundle)
-
-    # Uncomment the next line if you which to also automatically fetch and compile OpenCV for immvision support
-    # set(IMMVISION_FETCH_OPENCV ON)
-endif()
-
-
-
+#Get helloimgui
+CPMAddPackage("gh:pthom/imgui_bundle@1.92.4")
 
 # Build your app
 # ==============
@@ -40,36 +26,7 @@ endif()
 #     mkdir build && cd build && cmake .. && cmake --build .
 
 # By default, we install in a portable way (i.e. assets and executable are in the same folder)
-option(EXAMPLE_INTEGRATION_PORTABLE_INSTALL "Install in a portable way" ON)
+imgui_bundle_add_app(collabvm-cpp-client main.cpp)
 
-
-if (EXAMPLE_INTEGRATION_PORTABLE_INSTALL)
-    # portable installation is the easiest way to install the app
-    imgui_bundle_add_app(imgui_bundle_example_integration hello_world.cpp)
-else()
-    # Disable HelloImGui default install behavior
-    set(HELLOIMGUI_ADD_APP_WITH_INSTALL OFF CACHE BOOL "" FORCE)
-
-    imgui_bundle_add_app(imgui_bundle_example_integration hello_world.cpp)
-
-    # If not portable, we have to
-    # - install the app manually
-    # - install the assets manually
-    # - pass the assets location to the app, and set this assets location in main() via the compile definition ASSETS_LOCATION:
-    #     #ifdef ASSETS_LOCATION \n HelloImGui::SetAssetsFolder(ASSETS_LOCATION); \n #endif
-    if (NOT EXAMPLE_INTEGRATION_PORTABLE_INSTALL)
-        include(GNUInstallDirs)
-        install(TARGETS imgui_bundle_example_integration DESTINATION ${CMAKE_INSTALL_BINDIR})
-        set(assets_install_dir ${CMAKE_INSTALL_DATADIR}/imgui_bundle_example_integration)
-        if (NOT IS_ABSOLUTE ${assets_install_dir})
-            set(assets_install_dir ${CMAKE_INSTALL_PREFIX}/${assets_install_dir})
-        endif()
-        install(DIRECTORY assets DESTINATION ${assets_install_dir})
-        target_compile_definitions(imgui_bundle_example_integration PRIVATE ASSETS_LOCATION="${assets_install_dir}/assets")
-    endif()
-
-endif()
-
-
-
-
+target_compile_definitions(ixwebsocket PRIVATE IXWEBSOCKET_USE_MBED_TLS_MIN_VERSION_3)
+target_link_libraries(collabvm-cpp-client PRIVATE ixwebsocket)
