@@ -4,9 +4,9 @@ set(CMAKE_CXX_STANDARD 26)
 
 # add dependencies
 include(cmake/CPM.cmake)
-include(cmake/zlib.cmake)
-include(cmake/mbedtls.cmake)
-include(cmake/ixwebsocket.cmake)
+include(cmake/cpm/zlib.cmake)
+include(cmake/cpm/mbedtls.cmake)
+include(cmake/cpm/ixwebsocket.cmake)
 
 #Get helloimgui
 CPMAddPackage("gh:pthom/hello_imgui@1.92.3")
@@ -30,7 +30,10 @@ CPMAddPackage("gh:pthom/hello_imgui@1.92.3")
 
 
 # portable installation is the easiest way to install the app
-hello_imgui_add_app(collabvm-cpp-client cvm_client_main.cpp)
+hello_imgui_add_app(
+    collabvm-cpp-client 
+    client/setup.cpp
+)
 
 target_compile_definitions(ixwebsocket PRIVATE IXWEBSOCKET_USE_MBED_TLS_MIN_VERSION_3)
 target_link_libraries(collabvm-cpp-client PRIVATE ixwebsocket)
