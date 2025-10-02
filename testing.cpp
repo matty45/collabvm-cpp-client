@@ -14,6 +14,8 @@
 //
 //}
 
+ix::WebSocket g_web_socket;
+
 void ws_test()
 {
 	HelloImGui::Log(HelloImGui::LogLevel::Debug, "Activated WS test.");
@@ -48,7 +50,7 @@ void ws_test()
 				HelloImGui::Log(HelloImGui::LogLevel::Debug, "WS: Pong: \"%s\"", msg->str.c_str());
 				break;
 			case ix::WebSocketMessageType::Message:
-				HelloImGui::Log(HelloImGui::LogLevel::Debug, "WSL MSG: \"%s\"", msg->str.c_str());
+				HelloImGui::Log(HelloImGui::LogLevel::Debug, "WS: MSG: \"%s\"", msg->str.c_str());
 				//handle_cvm_guac_msg(msg)
 				break;
 			case ix::WebSocketMessageType::Open:
@@ -61,7 +63,7 @@ void ws_test()
 				HelloImGui::Log(HelloImGui::LogLevel::Debug, "WS: Fragmented MSG: \"%s\"", msg->str.c_str());
 				break;
 			case ix::WebSocketMessageType::Error:
-				HelloImGui::Log(HelloImGui::LogLevel::Error, "WS: Error MSG: \"%s\"", msg->str.c_str());
+				HelloImGui::Log(HelloImGui::LogLevel::Error, "WS: Error MSG: \"%s\"", msg->errorInfo.reason.c_str());
 				break;
 			}
 		}

@@ -25,13 +25,13 @@ static void gui()
 
 int main(int, char**)
 {
-#ifdef _WIN32 	// Required on Windows
+#ifdef _WIN32 	// Required on Windows for websocket shit.
     ix::initNetSystem();
 #endif
 
     ImmApp::Run(gui,g_window_title,true,true);
 
-#ifdef _WIN32 	// Required on Windows
+#ifdef _WIN32
     ix::uninitNetSystem();
 #endif
     return 0;
