@@ -4,6 +4,9 @@ set(CMAKE_CXX_STANDARD 26)
 
 # add dependencies
 include(cmake/CPM.cmake)
+set(CPM_USE_LOCAL_PACKAGES ON)
+set(CPM_SOURCE_CACHE ${CMAKE_CURRENT_LIST_DIR}/CPMCache)
+
 include(cmake/cpm/zlib.cmake)
 include(cmake/cpm/mbedtls.cmake)
 include(cmake/cpm/ixwebsocket.cmake)
