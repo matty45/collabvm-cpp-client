@@ -14,14 +14,16 @@
 //
 //}
 
-ix::WebSocket g_web_socket;
+static ix::WebSocket g_web_socket;
 
-void ws_test()
+const std::string url("wss://computernewb.com/collab-vm/vm7");
+
+void init_ws_test()
 {
-	HelloImGui::Log(HelloImGui::LogLevel::Debug, "Activated WS test.");
+	HelloImGui::Log(HelloImGui::LogLevel::Info, "Initialized WS test handler.");
 
 	// Specify url to connect to
-	const std::string url("wss://computernewb.com/collab-vm/vm7");
+
 	g_web_socket.setUrl(url);
 
 	//Set origin header and add guacamole as subprotocol.
@@ -35,7 +37,7 @@ void ws_test()
 	g_web_socket.setPingMessage("3.nop;", ix::SendMessageKind::Text);
 	g_web_socket.setPingInterval(10);
 
-	HelloImGui::Log(HelloImGui::LogLevel::Debug, "Connecting to \"%s\"",url.c_str());
+
 
 	// Setup a callback to be fired (in a background thread, watch out for race conditions !)
 	// when a message or an event (open, close, error) is received
@@ -54,10 +56,10 @@ void ws_test()
 				//handle_cvm_guac_msg(msg)
 				break;
 			case ix::WebSocketMessageType::Open:
-				HelloImGui::Log(HelloImGui::LogLevel::Debug, "WS: Connection Established!");
+				HelloImGui::Log(HelloImGui::LogLevel::Info, "WS: Connection Established!");
 				break;
 			case ix::WebSocketMessageType::Close:
-				HelloImGui::Log(HelloImGui::LogLevel::Debug, "WS: Connection Closed!");
+				HelloImGui::Log(HelloImGui::LogLevel::Info, "WS: Connection Closed!");
 				break;
 			case ix::WebSocketMessageType::Fragment:
 				HelloImGui::Log(HelloImGui::LogLevel::Debug, "WS: Fragmented MSG: \"%s\"", msg->str.c_str());
@@ -69,5 +71,21 @@ void ws_test()
 		}
 	);
 
+	activate_ws_test_disable = !activate_ws_test_disable;
+	init_ws_test_disable = !init_ws_test_disable;
+}
+
+void start_ws_test()
+{
 	g_web_socket.start();
+	HelloImGui::Log(HelloImGui::LogLevel::Info, "Connecting to \"%s\"", url.c_str());
+	activate_ws_test_disable = !activate_ws_test_disable;
+	deactivate_ws_test_disable = !deactivate_ws_test_disable;
+}
+
+void stop_ws_test()
+{
+	g_web_socket.stop();
+	activate_ws_test_disable = !activate_ws_test_disable;
+	deactivate_ws_test_disable = !deactivate_ws_test_disable;
 }

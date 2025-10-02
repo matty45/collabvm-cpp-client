@@ -5,19 +5,37 @@
 #include "ixwebsocket/IXNetSystem.h"
 
 
-bool ws_test_disable = false;
+static void handle_gui_ws_test_buttons()
+{
+	ImGui::BeginDisabled(init_ws_test_disable);
+	if (ImGui::Button("Initialize"))
+		init_ws_test();
+	
+	ImGui::EndDisabled();
+	ImGui::SameLine();
+
+	ImGui::BeginDisabled(activate_ws_test_disable);
+	if (ImGui::Button("Activate"))
+		start_ws_test();
+	
+	ImGui::EndDisabled();
+
+	ImGui::SameLine();
+	ImGui::BeginDisabled(deactivate_ws_test_disable);
+	if (ImGui::Button("Deactivate"))
+		stop_ws_test();
+	
+	ImGui::EndDisabled();
+}
 
 static void gui()
 {
     ImGui::Text("This program does nothing at the moment but try to simulate a proper websocket connection to a vm on collabvm.");
 
-    ImGui::BeginDisabled(ws_test_disable);
-    if (ImGui::Button("Activate WS Test."))
-    {
-        ws_test();
-        ws_test_disable = true;
-    }
-    ImGui::EndDisabled();
+	ImGui::Separator();
+	ImGui::Text("WS Test: ");
+	ImGui::SameLine();
+    handle_gui_ws_test_buttons();
 
     ImGui::Separator();
     HelloImGui::LogGui();
