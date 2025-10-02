@@ -2,6 +2,7 @@
 #include "globals.h"
 #include "immapp/immapp.h"
 #include "imgui.h"
+#include "ixwebsocket/IXNetSystem.h"
 
 
 bool ws_test_disable = false;
@@ -24,7 +25,14 @@ static void gui()
 
 int main(int, char**)
 {
+#ifdef _WIN32 	// Required on Windows
+    ix::initNetSystem();
+#endif
+
     ImmApp::Run(gui,g_window_title,true,true);
 
+#ifdef _WIN32 	// Required on Windows
+    ix::uninitNetSystem();
+#endif
     return 0;
 }

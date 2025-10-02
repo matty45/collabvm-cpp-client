@@ -2,6 +2,7 @@
 #include "client.h"
 #include <iostream>
 
+#include "globals.h"
 #include "hello_imgui/hello_imgui_logger.h"
 
 #include "ixwebsocket/IXNetSystem.h"
@@ -17,32 +18,26 @@ void ws_test()
 {
 	HelloImGui::Log(HelloImGui::LogLevel::Debug, "Activated WS test.");
 
-	// Required on Windows
-	ix::initNetSystem();
-
-	// Our websocket object
-	ix::WebSocket webSocket;
-
 	// Specify url to connect to
-	const std::string url("wss://computernewb.com/collab-vm");
-	webSocket.setUrl(url);
+	const std::string url("wss://computernewb.com/collab-vm/vm7");
+	g_web_socket.setUrl(url);
 
 	//Set origin header and add guacamole as subprotocol.
 	ix::WebSocketHttpHeaders headers;
 	headers["Origin"] = "https://computernewb.com/";
-	webSocket.setExtraHeaders(headers);
+	g_web_socket.setExtraHeaders(headers);
 
-	webSocket.addSubProtocol("guacamole");
+	g_web_socket.addSubProtocol("guacamole");
 
 	// Designate 3.nop as the message cvm server uses to ping the client.
-	webSocket.setPingMessage("3.nop;", ix::SendMessageKind::Text);
-	webSocket.setPingInterval(10);
+	g_web_socket.setPingMessage("3.nop;", ix::SendMessageKind::Text);
+	g_web_socket.setPingInterval(10);
 
 	HelloImGui::Log(HelloImGui::LogLevel::Debug, "Connecting to \"%s\"",url.c_str());
 
 	// Setup a callback to be fired (in a background thread, watch out for race conditions !)
 	// when a message or an event (open, close, error) is received
-	webSocket.setOnMessageCallback([](const ix::WebSocketMessagePtr& msg)
+	g_web_socket.setOnMessageCallback([](const ix::WebSocketMessagePtr& msg)
 		{
 			switch (msg->type)
 			{
@@ -72,5 +67,5 @@ void ws_test()
 		}
 	);
 
-	webSocket.start();
+	g_web_socket.start();
 }
