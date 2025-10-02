@@ -16,15 +16,13 @@
 
 static ix::WebSocket g_web_socket;
 
-const std::string url("wss://computernewb.com/collab-vm/vm7");
-
 void init_ws_test()
 {
 	HelloImGui::Log(HelloImGui::LogLevel::Info, "Initialized WS test handler.");
 
 	// Specify url to connect to
 
-	g_web_socket.setUrl(url);
+	g_web_socket.setUrl(ws_url);
 
 	//Set origin header and add guacamole as subprotocol.
 	ix::WebSocketHttpHeaders headers;
@@ -78,7 +76,7 @@ void init_ws_test()
 void start_ws_test()
 {
 	g_web_socket.start();
-	HelloImGui::Log(HelloImGui::LogLevel::Info, "Connecting to \"%s\"", url.c_str());
+	HelloImGui::Log(HelloImGui::LogLevel::Info, "Connecting to \"%s\"", ws_url);
 	activate_ws_test_disable = !activate_ws_test_disable;
 	deactivate_ws_test_disable = !deactivate_ws_test_disable;
 }

@@ -10,3 +10,5 @@ inline bool activate_ws_test_disable = true;
 inline bool deactivate_ws_test_disable = true;
 
 inline bool init_ws_test_disable = false;
+
+inline char ws_url[255] = "wss://computernewb.com/collab-vm/vm1";

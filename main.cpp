@@ -4,9 +4,12 @@
 #include "imgui.h"
 #include "ixwebsocket/IXNetSystem.h"
 
-
-static void handle_gui_ws_test_buttons()
+static void ws_test_gui()
 {
+	ImGui::Separator();
+
+	ImGui::Text("Websocket Testing");
+
 	ImGui::BeginDisabled(init_ws_test_disable);
 	if (ImGui::Button("Initialize"))
 		init_ws_test();
@@ -26,18 +29,20 @@ static void handle_gui_ws_test_buttons()
 		stop_ws_test();
 	
 	ImGui::EndDisabled();
+
+	ImGui::Text("CVM WS Server URL: ");
+	ImGui::SameLine();
+	ImGui::InputText("##url", ws_url, IM_ARRAYSIZE(ws_url));
+
+	ImGui::Separator();
 }
 
 static void gui()
 {
     ImGui::Text("This program does nothing at the moment but try to simulate a proper websocket connection to a vm on collabvm.");
 
-	ImGui::Separator();
-	ImGui::Text("WS Test: ");
-	ImGui::SameLine();
-    handle_gui_ws_test_buttons();
+    ws_test_gui();
 
-    ImGui::Separator();
     HelloImGui::LogGui();
 }
 
