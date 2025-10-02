@@ -14,6 +14,16 @@ include(cmake/cpm/ixwebsocket.cmake)
 #Get helloimgui
 CPMAddPackage("gh:pthom/imgui_bundle@1.92.4")
 
+# Disable stuff we will never use.
+set(IMGUI_BUNDLE_DISABLE_IMGUI_NODE_EDITOR ON CACHE BOOL "" FORCE)
+set(IMGUI_BUNDLE_DISABLE_IMGUI_TEX_INSPECT ON CACHE BOOL "" FORCE)
+set(IMGUI_BUNDLE_DISABLE_IMGUIZMO ON CACHE BOOL "" FORCE)
+set(IMGUI_BUNDLE_DISABLE_IMMVISION ON CACHE BOOL "" FORCE)
+set(IMGUI_BUNDLE_DISABLE_IMPLOT ON CACHE BOOL "" FORCE)
+set(IMGUI_BUNDLE_DISABLE_IMPLOT3D ON CACHE BOOL "" FORCE)
+set(IMGUI_BUNDLE_DISABLE_NANOVG ON CACHE BOOL "" FORCE)
+
+
 # Build your app
 # ==============
 # imgui_bundle_add_app is a helper function, similar to cmake's "add_executable"
