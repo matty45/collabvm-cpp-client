@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <string>
 
 #include "guac.h"
@@ -31,6 +32,7 @@ namespace cvm
 
 	enum class guac_msg_type {
 		adduser,
+		remuser,
 		unknown
 	};
 }
@@ -66,6 +68,7 @@ namespace client
 	// https://medium.com/@ryan_forrester_/using-switch-statements-with-strings-in-c-a-complete-guide-efa12f64a59d :puke:
 	inline cvm::guac_msg_type get_guac_msg_type(const std::string& str) {
 		if (str == "adduser") return cvm::guac_msg_type::adduser;
+		if (str == "remuser") return cvm::guac_msg_type::remuser;
 		return cvm::guac_msg_type::unknown;
 	}
 
@@ -75,7 +78,7 @@ namespace client
 
 		switch (get_guac_msg_type(decoded_msg[0]))
 		{
-		case cvm::guac_msg_type::adduser:
+		case cvm::guac_msg_type::adduser: // Handle user joining the vm.
 
 			for (int i = 2; i < decoded_msg.size(); i += 2)
 			{
@@ -86,9 +89,21 @@ namespace client
 
 				globals::users.push_back(new_user);
 
+				HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: User Joined: \"%s\"", new_user.username.c_str());
 			}
 
-				HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: User/Users Added");
+			break;
+		case cvm::guac_msg_type::remuser: // Handle user leaving the vm.
+
+			for (int i = 2; i < decoded_msg.size(); ++i)
+			{
+				std::string username = decoded_msg[i];
+
+				std::erase_if(globals::users,[&](const cvm::user& u) { return u.username == username; });
+
+				HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: User Left: \"%s\"", username.c_str());
+			}
+
 			break;
 		case cvm::guac_msg_type::unknown:
 			break;

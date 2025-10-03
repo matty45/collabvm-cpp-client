@@ -82,6 +82,11 @@ void client::start_ws()
 void client::stop_ws()
 {
 	g_web_socket.stop();
+
+	//clear user list, etc
+	globals::users.clear();
+	globals::users.shrink_to_fit();
+
 	ui::globals::activate_ws_disable = !ui::globals::activate_ws_disable;
 	ui::globals::deactivate_ws_disable = !ui::globals::deactivate_ws_disable;
 }
