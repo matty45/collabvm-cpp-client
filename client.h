@@ -19,6 +19,7 @@ namespace cvm
 
 	class user
 	{
+	public:
 		std::string username;
 
 		user_rank rank_ = Unregistered;
@@ -30,8 +31,6 @@ namespace cvm
 
 	enum class guac_msg_type {
 		adduser,
-		list,
-		nop,
 		unknown
 	};
 }
@@ -55,7 +54,7 @@ namespace client::globals
 	 */
 	inline char url[255] = "wss://computernewb.com/collab-vm/vm9";
 
-	inline cvm::user users[];
+	inline std::vector<cvm::user> users;
 }
 
 namespace client
@@ -77,10 +76,19 @@ namespace client
 		switch (get_guac_msg_type(decoded_msg[0]))
 		{
 		case cvm::guac_msg_type::adduser:
-			break;
-		case cvm::guac_msg_type::list:
-			break;
-		case cvm::guac_msg_type::nop:
+
+			for (int i = 2; i < decoded_msg.size(); i += 2)
+			{
+				cvm::user new_user;
+
+				new_user.username = decoded_msg[i];
+				new_user.rank_ = static_cast<cvm::user_rank>(std::stoi(decoded_msg[i + 1]));
+
+				globals::users.push_back(new_user);
+
+			}
+
+				HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: User/Users Added");
 			break;
 		case cvm::guac_msg_type::unknown:
 			break;
