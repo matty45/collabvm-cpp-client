@@ -7,10 +7,51 @@
 #include "ixwebsocket/IXWebSocket.h"
 #include "ixwebsocket/IXWebSocketTransport.h"
 
-//void handle_cvm_guac_msg(const ix::WebSocketMessagePtr& msg)
-//{
-//
-//}
+// https://medium.com/@ryan_forrester_/using-switch-statements-with-strings-in-c-a-complete-guide-efa12f64a59d :puke:
+inline cvm::guac_msg_type get_guac_msg_type(const std::string& str) {
+	if (str == "adduser") return cvm::guac_msg_type::adduser;
+	if (str == "remuser") return cvm::guac_msg_type::remuser;
+	return cvm::guac_msg_type::unknown;
+}
+
+inline void handle_guac_msg(std::string msg)
+{
+	std::vector<std::string> decoded_msg = guac_decode(msg);
+
+	switch (get_guac_msg_type(decoded_msg[0]))
+	{
+	case cvm::guac_msg_type::adduser: // Handle user joining the vm.
+
+		for (int i = 2; i < decoded_msg.size(); i += 2)
+		{
+			cvm::user new_user;
+
+			new_user.username = decoded_msg[i];
+			new_user.rank_ = static_cast<cvm::user_rank>(std::stoi(decoded_msg[i + 1]));
+
+			client::globals::users.push_back(new_user);
+
+			HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: User Joined: \"%s\"", new_user.username.c_str());
+		}
+
+		break;
+	case cvm::guac_msg_type::remuser: // Handle user leaving the vm.
+
+		for (int i = 2; i < decoded_msg.size(); ++i)
+		{
+			std::string username = decoded_msg[i];
+
+			std::erase_if(client::globals::users, [&](const cvm::user& u) { return u.username == username; });
+
+			HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: User Left: \"%s\"", username.c_str());
+		}
+
+		break;
+	case cvm::guac_msg_type::unknown:
+		break;
+	}
+
+}
 
 static ix::WebSocket g_web_socket;
 
