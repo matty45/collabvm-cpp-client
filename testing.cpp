@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "globals.h"
+#include "guac.h"
 #include "hello_imgui/hello_imgui_logger.h"
 
 #include "ixwebsocket/IXNetSystem.h"
@@ -50,8 +51,8 @@ void init_ws_test()
 				HelloImGui::Log(HelloImGui::LogLevel::Debug, "WS: Pong: \"%s\"", msg->str.c_str());
 				break;
 			case ix::WebSocketMessageType::Message:
-				HelloImGui::Log(HelloImGui::LogLevel::Debug, "WS: MSG: \"%s\"", msg->str.c_str());
-				//handle_cvm_guac_msg(msg)
+				//HelloImGui::Log(HelloImGui::LogLevel::Debug, "WS: MSG: \"%s\"", msg->str.c_str());
+				guac_decode(msg->str);
 				break;
 			case ix::WebSocketMessageType::Open:
 				HelloImGui::Log(HelloImGui::LogLevel::Info, "WS: Connection Established!");

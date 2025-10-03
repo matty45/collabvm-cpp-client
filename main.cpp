@@ -1,5 +1,6 @@
 #include "client.h"
 #include "globals.h"
+#include "guac.h"
 #include "immapp/immapp.h"
 #include "imgui.h"
 #include "ixwebsocket/IXNetSystem.h"
@@ -9,6 +10,9 @@ static void ws_test_gui()
 	ImGui::Separator();
 
 	ImGui::Text("Websocket Testing");
+
+	if (ImGui::Button("WS Parse Test"))
+		guac_decode("7.adduser,1.9,4.gogo,1.0,3.mv_,1.0,7.moniker,1.0,10.yellows111,1.0,10.guest53144,1.0,11.LandOfKurac,1.0,4.manu,1.0,10.guest74773,1.0,14.JoaquimNicacio,1.0;");
 
 	ImGui::BeginDisabled(init_ws_test_disable);
 	if (ImGui::Button("Initialize"))
