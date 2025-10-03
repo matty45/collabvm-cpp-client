@@ -42,7 +42,7 @@ set(IMGUI_BUNDLE_DISABLE_NANOVG ON CACHE BOOL "" FORCE)
 #     mkdir build && cd build && cmake .. && cmake --build .
 
 # By default, we install in a portable way (i.e. assets and executable are in the same folder)
-imgui_bundle_add_app(collabvm-cpp-client main.cpp testing.cpp)
+imgui_bundle_add_app(collabvm-cpp-client main.cpp client.cpp)
 
 target_compile_definitions(ixwebsocket PRIVATE IXWEBSOCKET_USE_MBED_TLS_MIN_VERSION_3)
 target_link_libraries(collabvm-cpp-client PRIVATE ixwebsocket)

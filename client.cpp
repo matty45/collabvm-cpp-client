@@ -1,12 +1,9 @@
 
 #include "client.h"
-#include <iostream>
 
-#include "globals.h"
 #include "guac.h"
 #include "hello_imgui/hello_imgui_logger.h"
 
-#include "ixwebsocket/IXNetSystem.h"
 #include "ixwebsocket/IXWebSocket.h"
 #include "ixwebsocket/IXWebSocketTransport.h"
 
@@ -17,13 +14,13 @@
 
 static ix::WebSocket g_web_socket;
 
-void init_ws_test()
+void client::init_ws_handler()
 {
-	HelloImGui::Log(HelloImGui::LogLevel::Info, "Initialized WS test handler.");
+	HelloImGui::Log(HelloImGui::LogLevel::Info, "Initialized WS handler.");
 
 	// Specify url to connect to
 
-	g_web_socket.setUrl(ws_url);
+	g_web_socket.setUrl(globals::url);
 
 	//Set origin header and add guacamole as subprotocol.
 	ix::WebSocketHttpHeaders headers;
@@ -52,7 +49,7 @@ void init_ws_test()
 				break;
 			case ix::WebSocketMessageType::Message:
 				//HelloImGui::Log(HelloImGui::LogLevel::Debug, "WS: MSG: \"%s\"", msg->str.c_str());
-				guac_decode(msg->str);
+				handle_guac_msg(msg->str);
 				break;
 			case ix::WebSocketMessageType::Open:
 				HelloImGui::Log(HelloImGui::LogLevel::Info, "WS: Connection Established!");
@@ -70,21 +67,21 @@ void init_ws_test()
 		}
 	);
 
-	activate_ws_test_disable = !activate_ws_test_disable;
-	init_ws_test_disable = !init_ws_test_disable;
+	ui::globals::activate_ws_disable = !ui::globals::activate_ws_disable;
+	ui::globals::init_ws_test_disable = !ui::globals::init_ws_test_disable;
 }
 
-void start_ws_test()
+void client::start_ws()
 {
 	g_web_socket.start();
-	HelloImGui::Log(HelloImGui::LogLevel::Info, "Connecting to \"%s\"", ws_url);
-	activate_ws_test_disable = !activate_ws_test_disable;
-	deactivate_ws_test_disable = !deactivate_ws_test_disable;
+	HelloImGui::Log(HelloImGui::LogLevel::Info, "Connecting to \"%s\"", globals::url);
+	ui::globals::activate_ws_disable = !ui::globals::activate_ws_disable;
+	ui::globals::deactivate_ws_disable = !ui::globals::deactivate_ws_disable;
 }
 
-void stop_ws_test()
+void client::stop_ws()
 {
 	g_web_socket.stop();
-	activate_ws_test_disable = !activate_ws_test_disable;
-	deactivate_ws_test_disable = !deactivate_ws_test_disable;
+	ui::globals::activate_ws_disable = !ui::globals::activate_ws_disable;
+	ui::globals::deactivate_ws_disable = !ui::globals::deactivate_ws_disable;
 }

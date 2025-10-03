@@ -1,4 +1,7 @@
 // Vibecoded this code here, sorry.. :(
+// TODO: Rewrite this from scratch without artificial unintelligence.
+#pragma once
+
 #include <vector>
 #include <string>
 #include <sstream>
@@ -9,6 +12,7 @@
 // Decode function: parses the custom protocol string into a vector of strings
 inline std::vector<std::string> guac_decode(const std::string& input) {
     HelloImGui::Log(HelloImGui::LogLevel::Debug, "GUAC: Decoding WS Message: \"%s\"", input.c_str());
+
     int pos = -1;
     std::vector<std::string> sections;
 
@@ -39,11 +43,18 @@ inline std::vector<std::string> guac_decode(const std::string& input) {
 
         if (sep == ',')
             continue;
-        else if (sep == ';')
-            break;
-        else
-            return {};
+        if (sep == ';')
+	        break;
+        return {};
     }
+
+#ifndef NDEBUG
+    std::string s;
+    for (const auto& piece : sections) s += " [" +  piece + "] ";
+
+    HelloImGui::Log(HelloImGui::LogLevel::Debug, "GUAC: Decoded WS Message: \"%s\"", s.c_str());
+#endif
+
     return sections;
 }
 
