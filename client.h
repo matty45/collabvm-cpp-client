@@ -74,6 +74,10 @@ namespace client
  */
 	inline char g_url[255] = "wss://computernewb.com/collab-vm/vm9";
 
+	inline char g_user_name[255] = "CVM_CPP_Client";
+
+	inline bool g_hide_client_country = true;
+
 	inline ix::WebSocket g_web_socket;
 
 	inline std::vector<cvm::user> g_user_roster;

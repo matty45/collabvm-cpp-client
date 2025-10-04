@@ -4,14 +4,17 @@
 #include "immapp/immapp.h"
 #include "ixwebsocket/IXNetSystem.h"
 
-static void ws_test_gui()
+inline void ws_control_panel()
 {
 	ImGui::Separator();
 
 	ImGui::BeginDisabled(ui::g_activate_ws_disable);
 	if (ImGui::Button("Connect"))
 		client::start_ws();
-	
+
+	ImGui::SameLine();
+	ImGui::Checkbox("Hide Country", &client::g_hide_client_country);
+
 	ImGui::EndDisabled();
 
 	ImGui::SameLine();
@@ -28,11 +31,11 @@ static void ws_test_gui()
 	ImGui::Separator();
 }
 
-static void gui()
+static void main_gui()
 {
     ImGui::Text("This program does nothing at the moment but try to simulate a proper websocket connection to a vm on collabvm.");
 
-    ws_test_gui();
+    ws_control_panel();
 
     HelloImGui::LogGui();
 }
@@ -46,7 +49,7 @@ int main(int, char**)
 	// Init WS
 	client::init_ws_handler();
 
-    ImmApp::Run(gui, ui::g_window_title,true,true);
+    ImmApp::Run(main_gui, ui::g_window_title,true,true);
 
 #ifdef _WIN32
     ix::uninitNetSystem();

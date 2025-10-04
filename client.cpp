@@ -66,7 +66,24 @@ inline void handle_rename(std::vector<std::string> decoded_msg)
 {
 	if (std::stoi(decoded_msg[1]) == 0) // 0 if this is the client that requested a rename, 1 if if anyone else.
 	{
-		HelloImGui::Log(HelloImGui::LogLevel::Error, "CVM: Client renaming not implemented yet.");
+		switch (std::stoi(decoded_msg[2])) {
+		case '1':
+			// The username we wanted was taken
+			HelloImGui::Log(HelloImGui::LogLevel::Error, "CVM: Could not rename your clients username due to it being taken by someone else already.");
+			break;
+		case '2':
+			// The username we wanted was invalid
+			HelloImGui::Log(HelloImGui::LogLevel::Error, "CVM: Could not rename your clients username due to it being invalid.");
+			break;
+		case '3':
+			// The username we wanted is blacklisted
+			HelloImGui::Log(HelloImGui::LogLevel::Error, "CVM: Could not rename your clients username due to it being blacklisted.");
+			break;
+		}
+
+		//TODO: CVM Server returns always returns a zero otherwise, though that does not mean it worked, need to implement an extra check.
+		HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Client username change might have worked or not, idk lol.");
+
 		return;
 	}
 
@@ -74,7 +91,6 @@ inline void handle_rename(std::vector<std::string> decoded_msg)
 
 	user->username = decoded_msg[3];
 	HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Renamed User \"%s\" to \"%s\"", decoded_msg[2].c_str(), user->username.c_str());
-
 }
 
 inline void handle_chat(std::vector<std::string> decoded_msg)
@@ -185,9 +201,17 @@ void client::init_ws_handler()
 			case ix::WebSocketMessageType::Open:
 				HelloImGui::Log(HelloImGui::LogLevel::Info, "WS: Connection Established!");
 
+				// Hide our country information from other users if needed.
+				if (client::g_hide_client_country)
+					g_web_socket.send(guac_encode({ "noflag" }));
+
 				// Get list of VMS!
-				HelloImGui::Log(HelloImGui::LogLevel::Debug, "CVM: Sending list ws message.");
+				HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Sending list ws message.");
 				g_web_socket.send(guac_encode({ "list" }));
+
+				// Change our username.
+				HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Sending initial rename request.");
+				g_web_socket.send(guac_encode({ "rename", g_user_name}));
 
 				break;
 			case ix::WebSocketMessageType::Close:
