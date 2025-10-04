@@ -23,6 +23,7 @@ inline cvm::guac_msg_type get_guac_msg_type(const std::string& str) {
 	if (str == "chat") return cvm::guac_msg_type::chat;
 	if (str == "auth") return cvm::guac_msg_type::auth;
 	if (str == "list") return cvm::guac_msg_type::list;
+	if (str == "cap") return cvm::guac_msg_type::cap;
 	return cvm::guac_msg_type::unknown;
 }
 
@@ -127,6 +128,22 @@ inline void handle_list(std::vector<std::string> decoded_msg)
 	}
 }
 
+inline void handle_auth()
+{
+	server::g_server_has_cvm_auth = true;
+	HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Server is using the CollabVM Account Auth System!");
+}
+
+inline void handle_cap(std::vector<std::string> decoded_msg)
+{
+		for (int i = 1; i < decoded_msg.size(); i++)
+			if (decoded_msg[i] == "bin")
+			{
+				server::g_server_has_binary_protocol = true;
+				HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Server supports the binary protocol!");
+			}
+}
+
 inline void handle_guac_msg(std::string msg)
 {
 	std::vector<std::string> decoded_msg = guac_decode(msg);
@@ -149,14 +166,17 @@ inline void handle_guac_msg(std::string msg)
 		handle_flag(decoded_msg);
 		break;
 	case cvm::guac_msg_type::auth:
-		server::g_server_has_cvm_auth = true;
-		HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Server is using the CollabVM Account Auth System!");
+		handle_auth();
 		break;
 	case cvm::guac_msg_type::list:
 		handle_list(decoded_msg);
 		break;
+	case cvm::guac_msg_type::cap:
+		handle_cap(decoded_msg);
+		break;
 	case cvm::guac_msg_type::unknown:
 		break;
+
 	}
 }
 
@@ -205,6 +225,10 @@ void client::init_ws_handler()
 				if (client::g_hide_client_country)
 					g_web_socket.send(guac_encode({ "noflag" }));
 
+				// Send our clients capabilities to the server.
+				HelloImGui::Log(HelloImGui::LogLevel::Debug, "CVM: Sending server our capabilities.");
+				g_web_socket.send(guac_encode({ "cap","bin" }));
+
 				// Get list of VMS!
 				HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Sending list ws message.");
 				g_web_socket.send(guac_encode({ "list" }));
@@ -251,6 +275,7 @@ void client::stop_ws()
 	g_vm_list.shrink_to_fit();
 
 	server::g_server_has_cvm_auth = false; //TODO: Should probably make a class for this stuff but i don't know how to implement that in a tidy way. My c++ knowledge has faded over the months.
+	server::g_server_has_binary_protocol = false;
 
 	ui::g_activate_ws_disable = !ui::g_activate_ws_disable;
 	ui::g_deactivate_ws_disable = !ui::g_deactivate_ws_disable;

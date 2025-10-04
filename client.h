@@ -44,6 +44,7 @@ namespace cvm
 
 	enum class guac_msg_type {
 		auth,
+		cap,
 		list,
 		adduser,
 		remuser,
@@ -95,4 +96,5 @@ namespace server
 	 * Does the server use the cvm account auth system?
 	 */
 	inline bool g_server_has_cvm_auth = false;
+	inline bool g_server_has_binary_protocol = false;
 }
