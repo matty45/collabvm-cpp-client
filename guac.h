@@ -11,7 +11,11 @@
 
 // Decode function: parses the custom protocol string into a vector of strings
 inline std::vector<std::string> guac_decode(const std::string& input) {
-    HelloImGui::Log(HelloImGui::LogLevel::Debug, "GUAC: Decoding WS Message: \"%s\"", input.c_str());
+
+    //Hacky fix to stop the client ui from crashing due to printing really long base64 data in the logs by filtering out sync and png.
+    if (!input.starts_with("3.png") && !input.starts_with("4.sync"))
+        HelloImGui::Log(HelloImGui::LogLevel::Debug, "GUAC: Encoded Message: \"%s\"", input.c_str());
+
 
     int pos = -1;
     std::vector<std::string> sections;
@@ -49,10 +53,14 @@ inline std::vector<std::string> guac_decode(const std::string& input) {
     }
 
 #ifndef NDEBUG
-    std::string s;
-    for (const auto& piece : sections) s += " [" +  piece + "] ";
 
-    HelloImGui::Log(HelloImGui::LogLevel::Debug, "GUAC: Decoded WS Message: \"%s\"", s.c_str());
+    //Hacky fix to stop the client ui from crashing due to printing really long base64 data in the logs by filtering out png and sync
+    if (sections[0] != "png" && sections[0] != "sync"){
+        std::string s;
+        for (const auto& piece : sections) s += " [" + piece + "] ";
+
+        HelloImGui::Log(HelloImGui::LogLevel::Debug, "GUAC: Decoded Message: \"%s\"", s.c_str());
+    }
 #endif
 
     return sections;

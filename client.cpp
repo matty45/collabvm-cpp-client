@@ -126,6 +126,12 @@ inline void handle_list(std::vector<std::string> decoded_msg)
 
 		HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: VM added: \"%s\"", new_vm.id.c_str());
 	}
+
+	//TODO: Make a vm selection menu instead of connecting to the first vm that appears.
+
+	client::g_web_socket.send(guac_encode({ "connect", client::g_vm_list[0].id }));
+	HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Connecting to VM: \"%s\"", client::g_vm_list[0].id.c_str());
+
 }
 
 inline void handle_auth()
@@ -185,10 +191,6 @@ void client::init_ws_handler()
 {
 	HelloImGui::Log(HelloImGui::LogLevel::Info, "Initialized WS handler.");
 
-	// Specify url to connect to
-
-	g_web_socket.setUrl(g_url);
-
 	//Set origin header and add guacamole as subprotocol.
 	ix::WebSocketHttpHeaders headers;
 	headers["Origin"] = "https://computernewb.com/";
@@ -206,6 +208,10 @@ void client::init_ws_handler()
 	// when a message or an event (open, close, error) is received
 	g_web_socket.setOnMessageCallback([](const ix::WebSocketMessagePtr& msg)
 		{
+			//TODO: Implement binary protocol
+			//if (msg->binary)
+			//	handle_binary_msg(msg);
+
 			switch (msg->type)
 			{
 			case ix::WebSocketMessageType::Ping:
@@ -222,16 +228,17 @@ void client::init_ws_handler()
 				HelloImGui::Log(HelloImGui::LogLevel::Info, "WS: Connection Established!");
 
 				// Hide our country information from other users if needed.
-				if (client::g_hide_client_country)
-					g_web_socket.send(guac_encode({ "noflag" }));
+				if (g_hide_client_country)
+					g_web_socket.send("6.noflag;");
 
 				// Send our clients capabilities to the server.
 				HelloImGui::Log(HelloImGui::LogLevel::Debug, "CVM: Sending server our capabilities.");
-				g_web_socket.send(guac_encode({ "cap","bin" }));
+				//g_web_socket.send("3.cap,3.bin;"); TODO: Implement binary protocol
+				g_web_socket.send("3.cap;");
 
 				// Get list of VMS!
 				HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Sending list ws message.");
-				g_web_socket.send(guac_encode({ "list" }));
+				g_web_socket.send("4.list;");
 
 				// Change our username.
 				HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Sending initial rename request.");
@@ -257,6 +264,9 @@ void client::init_ws_handler()
 
 void client::start_ws()
 {
+	// Specify url to connect to
+	g_web_socket.setUrl(g_url);
+
 	g_web_socket.start();
 	HelloImGui::Log(HelloImGui::LogLevel::Info, "Connecting to \"%s\"", g_url);
 	ui::g_activate_ws_disable = !ui::g_activate_ws_disable;
