@@ -258,8 +258,6 @@ void client::init_ws_handler()
 		}
 	);
 
-	ui::g_activate_ws_disable = !ui::g_activate_ws_disable;
-	ui::g_init_ws_test_disable = !ui::g_init_ws_test_disable;
 }
 
 void client::start_ws()
@@ -269,8 +267,6 @@ void client::start_ws()
 
 	g_web_socket.start();
 	HelloImGui::Log(HelloImGui::LogLevel::Info, "Connecting to \"%s\"", g_url);
-	ui::g_activate_ws_disable = !ui::g_activate_ws_disable;
-	ui::g_deactivate_ws_disable = !ui::g_deactivate_ws_disable;
 }
 
 void client::stop_ws()
@@ -287,6 +283,4 @@ void client::stop_ws()
 	server::g_server_has_cvm_auth = false; //TODO: Should probably make a class for this stuff but i don't know how to implement that in a tidy way. My c++ knowledge has faded over the months.
 	server::g_server_has_binary_protocol = false;
 
-	ui::g_activate_ws_disable = !ui::g_activate_ws_disable;
-	ui::g_deactivate_ws_disable = !ui::g_deactivate_ws_disable;
 }

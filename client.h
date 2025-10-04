@@ -1,8 +1,6 @@
 #pragma once
-#include <algorithm>
 #include <string>
 
-#include "guac.h"
 #include "ixwebsocket/IXWebSocket.h"
 
 //TODO: Split this all off into separate header files later when things get too big.
@@ -60,11 +58,9 @@ namespace ui
 {
 	inline const std::string g_window_title = "CollabVM Experimental C++ Client";
 
-	inline bool g_activate_ws_disable = true;
+	inline bool g_show_theme_tweak_window = false;
 
-	inline bool g_deactivate_ws_disable = true;
-
-	inline bool g_init_ws_test_disable = false;
+	inline bool g_open_connection_window = true;
 }
 
 
