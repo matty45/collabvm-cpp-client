@@ -19,7 +19,10 @@ inline cvm::guac_msg_type get_guac_msg_type(const std::string& str) {
 	if (str == "rename") return cvm::guac_msg_type::rename;
 	if (str == "flag") return cvm::guac_msg_type::flag;
 
+	// Client stuff
 	if (str == "chat") return cvm::guac_msg_type::chat;
+	if (str == "auth") return cvm::guac_msg_type::auth;
+	if (str == "list") return cvm::guac_msg_type::list;
 	return cvm::guac_msg_type::unknown;
 }
 
@@ -92,6 +95,22 @@ inline void handle_flag(const std::vector<std::string>& decoded_msg)
 	}
 }
 
+inline void handle_list(std::vector<std::string> decoded_msg)
+{
+	for (int i = 1; i < decoded_msg.size(); i += 3)
+	{
+		cvm::vm new_vm;
+
+		new_vm.id = decoded_msg[i];
+		new_vm.display_name = decoded_msg[i + 1];
+		new_vm.thumbnail = decoded_msg[i + 2];
+
+		client::g_vm_list.push_back(new_vm);
+
+		HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: VM added: \"%s\"", new_vm.id.c_str());
+	}
+}
+
 inline void handle_guac_msg(std::string msg)
 {
 	std::vector<std::string> decoded_msg = guac_decode(msg);
@@ -113,11 +132,16 @@ inline void handle_guac_msg(std::string msg)
 	case cvm::guac_msg_type::flag: // Handle user country code/flag/whatever.
 		handle_flag(decoded_msg);
 		break;
+	case cvm::guac_msg_type::auth:
+		server::g_server_has_cvm_auth = true;
+		HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Server is using the CollabVM Account Auth System!");
+		break;
+	case cvm::guac_msg_type::list:
+		handle_list(decoded_msg);
+		break;
 	case cvm::guac_msg_type::unknown:
 		break;
-
 	}
-
 }
 
 
@@ -160,6 +184,11 @@ void client::init_ws_handler()
 				break;
 			case ix::WebSocketMessageType::Open:
 				HelloImGui::Log(HelloImGui::LogLevel::Info, "WS: Connection Established!");
+
+				// Get list of VMS!
+				HelloImGui::Log(HelloImGui::LogLevel::Debug, "CVM: Sending list ws message.");
+				g_web_socket.send(guac_encode({ "list" }));
+
 				break;
 			case ix::WebSocketMessageType::Close:
 				HelloImGui::Log(HelloImGui::LogLevel::Info, "WS: Connection Closed!");
@@ -193,6 +222,11 @@ void client::stop_ws()
 	//clear user list, etc
 	g_user_roster.clear();
 	g_user_roster.shrink_to_fit();
+
+	g_vm_list.clear();
+	g_vm_list.shrink_to_fit();
+
+	server::g_server_has_cvm_auth = false; //TODO: Should probably make a class for this stuff but i don't know how to implement that in a tidy way. My c++ knowledge has faded over the months.
 
 	ui::g_activate_ws_disable = !ui::g_activate_ws_disable;
 	ui::g_deactivate_ws_disable = !ui::g_deactivate_ws_disable;

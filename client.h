@@ -31,7 +31,20 @@ namespace cvm
 		std::string country_code;
 	};
 
+	class vm
+	{
+	public:
+
+		std::string id;
+
+		std::string display_name; // Name of the VM, can contain HTML
+
+		std::string thumbnail; // Base64 encoded image png/jpeg (Will need to check the magic programatically)
+	};
+
 	enum class guac_msg_type {
+		auth,
+		list,
 		adduser,
 		remuser,
 		chat,
@@ -65,7 +78,17 @@ namespace client
 
 	inline std::vector<cvm::user> g_user_roster;
 
+	inline std::vector<cvm::vm> g_vm_list;
+
 	void init_ws_handler();
 	void start_ws();
 	void stop_ws();
+}
+
+namespace server
+{
+	/**
+	 * Does the server use the cvm account auth system?
+	 */
+	inline bool g_server_has_cvm_auth = false;
 }
