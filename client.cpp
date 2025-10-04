@@ -9,8 +9,14 @@
 
 // https://medium.com/@ryan_forrester_/using-switch-statements-with-strings-in-c-a-complete-guide-efa12f64a59d :puke:
 inline cvm::guac_msg_type get_guac_msg_type(const std::string& str) {
+
+	// User manipulation
 	if (str == "adduser") return cvm::guac_msg_type::adduser;
 	if (str == "remuser") return cvm::guac_msg_type::remuser;
+	if (str == "rename") return cvm::guac_msg_type::rename;
+	if (str == "flag") return cvm::guac_msg_type::flag;
+
+	if (str == "chat") return cvm::guac_msg_type::chat;
 	return cvm::guac_msg_type::unknown;
 }
 
@@ -21,7 +27,6 @@ inline void handle_guac_msg(std::string msg)
 	switch (get_guac_msg_type(decoded_msg[0]))
 	{
 	case cvm::guac_msg_type::adduser: // Handle user joining the vm.
-
 		for (int i = 2; i < decoded_msg.size(); i += 2)
 		{
 			cvm::user new_user;
@@ -29,25 +34,29 @@ inline void handle_guac_msg(std::string msg)
 			new_user.username = decoded_msg[i];
 			new_user.rank_ = static_cast<cvm::user_rank>(std::stoi(decoded_msg[i + 1]));
 
-			client::globals::users.push_back(new_user);
+			client::globals::user_roster.push_back(new_user);
 
 			HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: User Joined: \"%s\"", new_user.username.c_str());
 		}
 
 		break;
 	case cvm::guac_msg_type::remuser: // Handle user leaving the vm.
-
 		for (int i = 2; i < decoded_msg.size(); ++i)
 		{
 			std::string username = decoded_msg[i];
 
-			std::erase_if(client::globals::users, [&](const cvm::user& u) { return u.username == username; });
+			std::erase_if(client::globals::user_roster, [&](const cvm::user& u) { return u.username == username; });
 
 			HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: User Left: \"%s\"", username.c_str());
 		}
 
 		break;
 	case cvm::guac_msg_type::unknown:
+		break;
+	case cvm::guac_msg_type::chat: // Handle user chat message.
+		for (int i = 1; i < decoded_msg.size(); i += 2)
+			HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Chat: %s : %s", decoded_msg[i].c_str(), decoded_msg[i + 1].c_str());
+
 		break;
 	}
 
@@ -125,8 +134,8 @@ void client::stop_ws()
 	g_web_socket.stop();
 
 	//clear user list, etc
-	globals::users.clear();
-	globals::users.shrink_to_fit();
+	globals::user_roster.clear();
+	globals::user_roster.shrink_to_fit();
 
 	ui::globals::activate_ws_disable = !ui::globals::activate_ws_disable;
 	ui::globals::deactivate_ws_disable = !ui::globals::deactivate_ws_disable;

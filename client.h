@@ -33,6 +33,9 @@ namespace cvm
 	enum class guac_msg_type {
 		adduser,
 		remuser,
+		chat,
+		rename,
+		flag,
 		unknown
 	};
 }
@@ -56,7 +59,7 @@ namespace client::globals
 	 */
 	inline char url[255] = "wss://computernewb.com/collab-vm/vm9";
 
-	inline std::vector<cvm::user> users;
+	inline std::vector<cvm::user> user_roster;
 }
 
 namespace client
