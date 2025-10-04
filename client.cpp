@@ -23,6 +23,14 @@ inline cvm::guac_msg_type get_guac_msg_type(const std::string& str) {
 	return cvm::guac_msg_type::unknown;
 }
 
+// ReSharper disable once CppNotAllPathsReturnValue
+// This should never cause an error unless i am doing something really stupid.
+inline std::ranges::borrowed_iterator_t<std::vector<cvm::user>&> find_user_by_name(std::string username)
+{
+	std::ranges::borrowed_iterator_t<std::vector<cvm::user>&> i = std::ranges::find(client::g_user_roster, username, &cvm::user::username);
+	if (i != client::g_user_roster.end())
+		return i;
+}
 
 // TODO: Probably move these handling functions into their own file or something.
 inline void handle_adduser(std::vector<std::string> decoded_msg)
@@ -44,7 +52,8 @@ inline void handle_remuser(std::vector<std::string> decoded_msg)
 {
 	for (int i = 2; i < decoded_msg.size(); ++i)
 	{
-		std::erase_if(client::g_user_roster, [&](const cvm::user& u) { return u.username == decoded_msg[i]; });
+		// wish there was a one-liner equivalent for finding a member of a vector instead of deleting it but all we have is find_if or std::ranges::find :(
+		std::erase_if(client::g_user_roster, [&](const cvm::user& u) { return u.username == decoded_msg[i]; }); 
 
 		HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: User Left: \"%s\"", decoded_msg[i].c_str());
 	}
@@ -58,20 +67,29 @@ inline void handle_rename(std::vector<std::string> decoded_msg)
 		return;
 	}
 
-	auto i = std::ranges::find(client::g_user_roster, decoded_msg[2], &cvm::user::username);
-	if (i != client::g_user_roster.end())
-	{
-		i->username = decoded_msg[3];
-		HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Renamed User \"%s\" to \"%s\"", decoded_msg[2].c_str(), decoded_msg[3].c_str());
-	}
-	else
-		HelloImGui::Log(HelloImGui::LogLevel::Error, "CVM: User \"%s\" could not be renamed as they no longer exist!", decoded_msg[2].c_str());
+	std::ranges::borrowed_iterator_t<std::vector<cvm::user>&> user = find_user_by_name(decoded_msg[2]);
+
+	user->username = decoded_msg[3];
+	HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Renamed User \"%s\" to \"%s\"", decoded_msg[2].c_str(), user->username);
+
 }
 
 inline void handle_chat(std::vector<std::string> decoded_msg)
 {
 	for (int i = 1; i < decoded_msg.size(); i += 2)
 		HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Chat: %s : %s", decoded_msg[i].c_str(), decoded_msg[i + 1].c_str());
+}
+
+inline void handle_flag(const std::vector<std::string>& decoded_msg)
+{
+	for (int i = 1; i < decoded_msg.size(); i += 2)
+	{
+		std::ranges::borrowed_iterator_t<std::vector<cvm::user>&> user = find_user_by_name(decoded_msg[i]);
+
+		user->country_code = decoded_msg[i + 1];
+
+		HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Added country code \"%s\" to User \"%s\"", user->country_code.c_str(),user->username.c_str());
+	}
 }
 
 inline void handle_guac_msg(std::string msg)
@@ -89,14 +107,19 @@ inline void handle_guac_msg(std::string msg)
 	case cvm::guac_msg_type::rename: // Handle renaming user.
 		handle_rename(decoded_msg);
 		break;
-	case cvm::guac_msg_type::unknown:
-		break;
 	case cvm::guac_msg_type::chat: // Handle user chat message.
 		handle_chat(decoded_msg);
 		break;
+	case cvm::guac_msg_type::flag:
+		handle_flag(decoded_msg);
+		break;
+	case cvm::guac_msg_type::unknown:
+		break;
+
 	}
 
 }
+
 
 void client::init_ws_handler()
 {
