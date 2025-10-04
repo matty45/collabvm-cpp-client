@@ -1,8 +1,11 @@
 
 #include "client.h"
 
+#include <algorithm>
+
 #include "guac.h"
 #include "hello_imgui/hello_imgui_logger.h"
+#include "ixwebsocket/IXHttpServer.h"
 
 #include "ixwebsocket/IXWebSocket.h"
 #include "ixwebsocket/IXWebSocketTransport.h"
@@ -20,6 +23,57 @@ inline cvm::guac_msg_type get_guac_msg_type(const std::string& str) {
 	return cvm::guac_msg_type::unknown;
 }
 
+
+// TODO: Probably move these handling functions into their own file or something.
+inline void handle_adduser(std::vector<std::string> decoded_msg)
+{
+	for (int i = 2; i < decoded_msg.size(); i += 2)
+	{
+		cvm::user new_user;
+
+		new_user.username = decoded_msg[i];
+		new_user.rank_ = static_cast<cvm::user_rank>(std::stoi(decoded_msg[i + 1]));
+
+		client::g_user_roster.push_back(new_user);
+
+		HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: User Joined: \"%s\"", new_user.username.c_str());
+	}
+}
+
+inline void handle_remuser(std::vector<std::string> decoded_msg)
+{
+	for (int i = 2; i < decoded_msg.size(); ++i)
+	{
+		std::erase_if(client::g_user_roster, [&](const cvm::user& u) { return u.username == decoded_msg[i]; });
+
+		HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: User Left: \"%s\"", decoded_msg[i].c_str());
+	}
+}
+
+inline void handle_rename(std::vector<std::string> decoded_msg)
+{
+	if (std::stoi(decoded_msg[1]) == 0) // 0 if this is the client that requested a rename, 1 if if anyone else.
+	{
+		HelloImGui::Log(HelloImGui::LogLevel::Error, "CVM: Client renaming not implemented yet.");
+		return;
+	}
+
+	auto i = std::ranges::find(client::g_user_roster, decoded_msg[2], &cvm::user::username);
+	if (i != client::g_user_roster.end())
+	{
+		i->username = decoded_msg[3];
+		HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Renamed User \"%s\" to \"%s\"", decoded_msg[2].c_str(), decoded_msg[3].c_str());
+	}
+	else
+		HelloImGui::Log(HelloImGui::LogLevel::Error, "CVM: User \"%s\" could not be renamed as they no longer exist!", decoded_msg[2].c_str());
+}
+
+inline void handle_chat(std::vector<std::string> decoded_msg)
+{
+	for (int i = 1; i < decoded_msg.size(); i += 2)
+		HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Chat: %s : %s", decoded_msg[i].c_str(), decoded_msg[i + 1].c_str());
+}
+
 inline void handle_guac_msg(std::string msg)
 {
 	std::vector<std::string> decoded_msg = guac_decode(msg);
@@ -27,42 +81,22 @@ inline void handle_guac_msg(std::string msg)
 	switch (get_guac_msg_type(decoded_msg[0]))
 	{
 	case cvm::guac_msg_type::adduser: // Handle user joining the vm.
-		for (int i = 2; i < decoded_msg.size(); i += 2)
-		{
-			cvm::user new_user;
-
-			new_user.username = decoded_msg[i];
-			new_user.rank_ = static_cast<cvm::user_rank>(std::stoi(decoded_msg[i + 1]));
-
-			client::globals::user_roster.push_back(new_user);
-
-			HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: User Joined: \"%s\"", new_user.username.c_str());
-		}
-
+		handle_adduser(decoded_msg);
 		break;
 	case cvm::guac_msg_type::remuser: // Handle user leaving the vm.
-		for (int i = 2; i < decoded_msg.size(); ++i)
-		{
-			std::string username = decoded_msg[i];
-
-			std::erase_if(client::globals::user_roster, [&](const cvm::user& u) { return u.username == username; });
-
-			HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: User Left: \"%s\"", username.c_str());
-		}
-
+		handle_remuser(decoded_msg);
+		break;
+	case cvm::guac_msg_type::rename: // Handle renaming user.
+		handle_rename(decoded_msg);
 		break;
 	case cvm::guac_msg_type::unknown:
 		break;
 	case cvm::guac_msg_type::chat: // Handle user chat message.
-		for (int i = 1; i < decoded_msg.size(); i += 2)
-			HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Chat: %s : %s", decoded_msg[i].c_str(), decoded_msg[i + 1].c_str());
-
+		handle_chat(decoded_msg);
 		break;
 	}
 
 }
-
-static ix::WebSocket g_web_socket;
 
 void client::init_ws_handler()
 {
@@ -70,7 +104,7 @@ void client::init_ws_handler()
 
 	// Specify url to connect to
 
-	g_web_socket.setUrl(globals::url);
+	g_web_socket.setUrl(g_url);
 
 	//Set origin header and add guacamole as subprotocol.
 	ix::WebSocketHttpHeaders headers;
@@ -117,16 +151,16 @@ void client::init_ws_handler()
 		}
 	);
 
-	ui::globals::activate_ws_disable = !ui::globals::activate_ws_disable;
-	ui::globals::init_ws_test_disable = !ui::globals::init_ws_test_disable;
+	ui::g_activate_ws_disable = !ui::g_activate_ws_disable;
+	ui::g_init_ws_test_disable = !ui::g_init_ws_test_disable;
 }
 
 void client::start_ws()
 {
 	g_web_socket.start();
-	HelloImGui::Log(HelloImGui::LogLevel::Info, "Connecting to \"%s\"", globals::url);
-	ui::globals::activate_ws_disable = !ui::globals::activate_ws_disable;
-	ui::globals::deactivate_ws_disable = !ui::globals::deactivate_ws_disable;
+	HelloImGui::Log(HelloImGui::LogLevel::Info, "Connecting to \"%s\"", g_url);
+	ui::g_activate_ws_disable = !ui::g_activate_ws_disable;
+	ui::g_deactivate_ws_disable = !ui::g_deactivate_ws_disable;
 }
 
 void client::stop_ws()
@@ -134,9 +168,9 @@ void client::stop_ws()
 	g_web_socket.stop();
 
 	//clear user list, etc
-	globals::user_roster.clear();
-	globals::user_roster.shrink_to_fit();
+	g_user_roster.clear();
+	g_user_roster.shrink_to_fit();
 
-	ui::globals::activate_ws_disable = !ui::globals::activate_ws_disable;
-	ui::globals::deactivate_ws_disable = !ui::globals::deactivate_ws_disable;
+	ui::g_activate_ws_disable = !ui::g_activate_ws_disable;
+	ui::g_deactivate_ws_disable = !ui::g_deactivate_ws_disable;
 }

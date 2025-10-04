@@ -3,6 +3,7 @@
 #include <string>
 
 #include "guac.h"
+#include "ixwebsocket/IXWebSocket.h"
 
 //TODO: Split this all off into separate header files later when things get too big.
 
@@ -41,29 +42,29 @@ namespace cvm
 }
 
 
-namespace ui::globals
+namespace ui
 {
-	inline const std::string window_title = "CollabVM Experimental C++ Client";
+	inline const std::string g_window_title = "CollabVM Experimental C++ Client";
 
-	inline bool activate_ws_disable = true;
+	inline bool g_activate_ws_disable = true;
 
-	inline bool deactivate_ws_disable = true;
+	inline bool g_deactivate_ws_disable = true;
 
-	inline bool init_ws_test_disable = false;
+	inline bool g_init_ws_test_disable = false;
 }
 
-namespace client::globals
-{
-	/**
-	 * The URL of the websocket server to connect to.
-	 */
-	inline char url[255] = "wss://computernewb.com/collab-vm/vm9";
-
-	inline std::vector<cvm::user> user_roster;
-}
 
 namespace client
 {
+	/**
+ * The URL of the websocket server to connect to.
+ */
+	inline char g_url[255] = "wss://computernewb.com/collab-vm/vm9";
+
+	inline ix::WebSocket g_web_socket;
+
+	inline std::vector<cvm::user> g_user_roster;
+
 	void init_ws_handler();
 	void start_ws();
 	void stop_ws();

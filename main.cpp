@@ -8,14 +8,14 @@ static void ws_test_gui()
 {
 	ImGui::Separator();
 
-	ImGui::BeginDisabled(ui::globals::activate_ws_disable);
+	ImGui::BeginDisabled(ui::g_activate_ws_disable);
 	if (ImGui::Button("Connect"))
 		client::start_ws();
 	
 	ImGui::EndDisabled();
 
 	ImGui::SameLine();
-	ImGui::BeginDisabled(ui::globals::deactivate_ws_disable);
+	ImGui::BeginDisabled(ui::g_deactivate_ws_disable);
 	if (ImGui::Button("Deactivate"))
 		client::stop_ws();
 	
@@ -23,7 +23,7 @@ static void ws_test_gui()
 
 	ImGui::Text("CVM WS Server URL: ");
 	ImGui::SameLine();
-	ImGui::InputText("##url", client::globals::url, IM_ARRAYSIZE(client::globals::url));
+	ImGui::InputText("##url", client::g_url, IM_ARRAYSIZE(client::g_url));
 
 	ImGui::Separator();
 }
@@ -46,7 +46,7 @@ int main(int, char**)
 	// Init WS
 	client::init_ws_handler();
 
-    ImmApp::Run(gui, ui::globals::window_title,true,true);
+    ImmApp::Run(gui, ui::g_window_title,true,true);
 
 #ifdef _WIN32
     ix::uninitNetSystem();
