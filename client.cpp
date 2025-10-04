@@ -70,7 +70,7 @@ inline void handle_rename(std::vector<std::string> decoded_msg)
 	std::ranges::borrowed_iterator_t<std::vector<cvm::user>&> user = find_user_by_name(decoded_msg[2]);
 
 	user->username = decoded_msg[3];
-	HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Renamed User \"%s\" to \"%s\"", decoded_msg[2].c_str(), user->username);
+	HelloImGui::Log(HelloImGui::LogLevel::Info, "CVM: Renamed User \"%s\" to \"%s\"", decoded_msg[2].c_str(), user->username.c_str());
 
 }
 
@@ -110,7 +110,7 @@ inline void handle_guac_msg(std::string msg)
 	case cvm::guac_msg_type::chat: // Handle user chat message.
 		handle_chat(decoded_msg);
 		break;
-	case cvm::guac_msg_type::flag:
+	case cvm::guac_msg_type::flag: // Handle user country code/flag/whatever.
 		handle_flag(decoded_msg);
 		break;
 	case cvm::guac_msg_type::unknown:
