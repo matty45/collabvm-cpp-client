@@ -153,6 +153,15 @@ void theme_stuff()
 	ImGui::EndMenu();
 }
 
+void app_menu_gui()
+{
+	if (ImGui::MenuItem("Disconnect"))
+	{
+		client::stop_ws();
+		ui::g_open_connection_window = true;
+	}
+}
+
 inline void menu_gui(HelloImGui::RunnerParams& runnerParams)
 {
 	HelloImGui::ShowAppMenu(runnerParams);
@@ -258,6 +267,7 @@ inline std::vector<HelloImGui::DockableWindow> create_dockable_windows()
 
 
 
+int ShowAppMenuItems;
 // Apply the application layout and windows to the runner parameters
 inline void ApplyApplicationLayout(HelloImGui::RunnerParams* runnerParams)
 {
@@ -285,6 +295,9 @@ inline void ApplyApplicationLayout(HelloImGui::RunnerParams* runnerParams)
 
 	// Inside `ShowMenus`, we can call `HelloImGui::ShowViewMenu` and `HelloImGui::ShowAppMenu` if desired
 	runnerParams->callbacks.ShowMenus = [&runnerParams]() {menu_gui(*runnerParams); };
+
+	//add items to Hello ImGui default App menu
+	runnerParams->callbacks.ShowAppMenuItems = app_menu_gui;
 }
 
 
