@@ -1,48 +1,51 @@
 #pragma once
 
-inline QStringList guac_decode(const QString& input)
+namespace guac_utils
 {
-	QStringList sections;
-
-	int pos = -1;
-
-	while (true)
+	inline QStringList decode(const QString& input)
 	{
-		qsizetype len = input.indexOf('.', pos + 1);
+		QStringList sections;
 
-		if (len == -1)
-			break;
+		int pos = -1;
 
-		int length = input.mid(pos + 1, len - pos - 1).toInt();
+		while (true)
+		{
+			qsizetype len = input.indexOf('.', pos + 1);
 
-		pos = length + len + 1;
+			if (len == -1)
+				break;
 
-		// Check if message length is invalid
-		if (pos > input.size())
+			int length = input.mid(pos + 1, len - pos - 1).toInt();
+
+			pos = length + len + 1;
+
+			// Check if message length is invalid
+			if (pos > input.size())
+				return {};
+
+			sections.push_back(input.mid(len + 1, length));
+
+			QChar sep = (pos < input.size()) ? input[pos] : '\0';
+
+			if (sep == ',')
+				continue;
+			if (sep == ';')
+				break;
 			return {};
+		}
 
-		sections.push_back(input.mid(len + 1, length));
-
-		QChar sep = (pos < input.size()) ? input[pos] : '\0';
-
-		if (sep == ',')
-			continue;
-		if (sep == ';')
-			break;
-		return {};
+		return sections;
 	}
 
-	return sections;
-}
+	inline QString encode(const QStringList& strings) {
+		QString command;
 
-inline QString guac_encode(const QStringList& strings) {
-	QString command;
+		for (int i = 0; i < strings.size(); ++i) {
+			const QString& current = strings[i];
+			command += QString::number(current.length()) % '.' % current;
+			command += (i < strings.size() - 1) ? ',' : ';';
+		}
 
-	for (int i = 0; i < strings.size(); ++i) {
-		const QString& current = strings[i];
-		command += QString::number(current.length()) % '.' % current;
-		command += (i < strings.size() - 1) ? ',' : ';';
+		return command;
 	}
-
-	return command;
 }
