@@ -3,12 +3,6 @@
 
 cvm_ws_client* ws::client;
 
-void ws::ws_test()
-{
-	//TODO: Somehow move this logic elsewhere (it only seems to work in main.cpp for some screwed up reason.)
-	cvm_ws_client client(QUrl(QStringLiteral("wss://computernewb.com/collab-vm/vm8")));
-}
-
 cvm_ws_client::cvm_ws_client(const QUrl& url,QObject* parent) :
 	QObject(parent)
 {
