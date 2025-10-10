@@ -1,22 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>main_window</class>
+ <widget class="QMainWindow" name="main_window">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>480</height>
+    <width>318</width>
+    <height>93</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Main Window</string>
+  <property name="minimumSize">
+   <size>
+    <width>318</width>
+    <height>93</height>
+   </size>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <property name="windowTitle">
+   <string>CollabVM Qt Client</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="main_grid_layout">
+    <item row="0" column="0">
+     <widget class="QPushButton" name="the_funky_test_button">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="toolTip">
+       <string>Does a thing.</string>
+      </property>
+      <property name="text">
+       <string>Trigger WS Test</string>
+      </property>
+      <property name="icon">
+       <iconset theme="QIcon::ThemeIcon::Computer"/>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <resources>
-  <include location="../example.qrc"/>
+  <include location="../collabvm-qt-client.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -19,19 +19,20 @@ fix_project_version()
 set(SOURCE_FILES
     src/main.cpp
     src/mainwindow.cpp
+    src/ws.cpp
 )
 
 add_project_meta(META_FILES_TO_INCLUDE)
 
 set(RESOURCE_FILES collabvm-qt-client.qrc)
 
-find_package(Qt6 COMPONENTS Widgets REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Widgets WebSockets)
 
 qt_standard_project_setup()
 
 add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE
     ${SOURCE_FILES} ${META_FILES_TO_INCLUDE} ${RESOURCE_FILES}
-)
+ )
 
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
@@ -41,7 +42,7 @@ set_target_properties(${PROJECT_NAME}
 
 target_precompile_headers(${PROJECT_NAME} INTERFACE QtWidgets.h)
 
-target_link_libraries(${PROJECT_NAME} Qt6::Widgets)
+target_link_libraries(${PROJECT_NAME} Qt6::Widgets Qt::WebSockets)
 
 install(
     TARGETS ${PROJECT_NAME}

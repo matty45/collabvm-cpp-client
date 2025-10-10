@@ -1,4 +1,6 @@
 #pragma once
+#include <qlist.h>
+#include <qstring.h>
 
 namespace guac_utils
 {
