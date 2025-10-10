@@ -5,8 +5,12 @@
 
 #include "cvm.h"
 
+class cvm_ws_client;
+
 namespace ws
 {
+	extern cvm_ws_client* client;
+
 	void ws_test();
 
 }
