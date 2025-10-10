@@ -19,8 +19,8 @@ public:
 
 private Q_SLOTS:
     void on_connected();
-    static void on_disconnected();
-    static void on_text_message_received(QString message);
+	void on_disconnected();
+	void on_text_message_received(QString message);
 	void on_error_recieved(QAbstractSocket::SocketError error);
     void on_ssl_errors(const QList<QSslError>& errors);
 

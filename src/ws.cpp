@@ -1,6 +1,8 @@
 #include "ws.h"
 #include <QWebSocketHandshakeOptions>
 
+#include "guac.h"
+
 void ws::ws_test()
 {
      cvm_ws_client client(QUrl(QStringLiteral("wss://computernewb.com/collab-vm/vm8")));
@@ -34,17 +36,23 @@ void cvm_ws_client::on_connected()
 {
     qDebug() << "WebSocket connected";
     connect(&m_webSocket, &QWebSocket::textMessageReceived,this, &cvm_ws_client::on_text_message_received);
-    m_webSocket.sendTextMessage(QStringLiteral("Hello, world!"));
 }
 
 void cvm_ws_client::on_disconnected()
 {
     qDebug() << "Disconnected from server";
+    m_webSocket.close();
 }
 
 void cvm_ws_client::on_text_message_received(QString message)
 {
-    qDebug() << "Message received:" << message;
+	QStringList decoded_message = guac_utils::decode(message);
+
+    qDebug() << "Message received:" << decoded_message;
+
+    if (decoded_message[0] == "nop")
+        m_webSocket.sendTextMessage("3.nop;");
+
 }
 
 void cvm_ws_client::on_ssl_errors(const QList<QSslError>& errors)
