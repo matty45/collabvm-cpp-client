@@ -17,7 +17,6 @@ main_window::main_window(QWidget *parent)
 
 }
 
-
 // this function triggers on window close/deconstruct
 main_window::~main_window()
 {
