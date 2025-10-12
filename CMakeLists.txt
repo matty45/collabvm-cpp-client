@@ -6,6 +6,9 @@ cmake_minimum_required(VERSION 3.16)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+#Enable cmakes built-in qrc resource embedder.
+set(CMAKE_AUTORCC ON)
+
 # Include Qt basic functions
 include(QtCommon)
 
@@ -26,7 +29,7 @@ add_project_meta(META_FILES_TO_INCLUDE)
 
 set(RESOURCE_FILES collabvm-qt-client.qrc)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets WebSockets)
+find_package(Qt6 REQUIRED COMPONENTS Widgets WebSockets Concurrent)
 
 qt_standard_project_setup()
 
@@ -42,13 +45,12 @@ set_target_properties(${PROJECT_NAME}
 
 target_precompile_headers(${PROJECT_NAME} INTERFACE QtWidgets.h)
 
-target_link_libraries(${PROJECT_NAME} Qt6::Widgets Qt::WebSockets)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets Qt::WebSockets Qt6::Concurrent)
 
 install(
     TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION /Applications
 )
-
 
 qt_generate_deploy_app_script(
     TARGET collabvm-qt-client

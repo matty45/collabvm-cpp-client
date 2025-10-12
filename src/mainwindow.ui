@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>318</width>
-    <height>93</height>
+    <width>994</width>
+    <height>759</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -19,29 +19,206 @@
   <property name="windowTitle">
    <string>CollabVM Qt Client</string>
   </property>
+  <property name="tabShape">
+   <enum>QTabWidget::TabShape::Rounded</enum>
+  </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>true</bool>
+  </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="main_grid_layout">
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>5</number>
+    </property>
+    <property name="topMargin">
+     <number>5</number>
+    </property>
+    <property name="rightMargin">
+     <number>5</number>
+    </property>
+    <property name="bottomMargin">
+     <number>5</number>
+    </property>
     <item row="0" column="0">
-     <widget class="QPushButton" name="the_funky_test_button">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+     <widget class="QTabWidget" name="tabs">
+      <property name="currentIndex">
+       <number>0</number>
       </property>
-      <property name="toolTip">
-       <string>Does a thing.</string>
+      <property name="tabsClosable">
+       <bool>true</bool>
       </property>
-      <property name="text">
-       <string>Trigger WS Test</string>
+      <property name="movable">
+       <bool>true</bool>
       </property>
-      <property name="icon">
-       <iconset theme="QIcon::ThemeIcon::Computer"/>
+      <property name="tabBarAutoHide">
+       <bool>false</bool>
       </property>
+      <widget class="QWidget" name="vm_list_tab">
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <attribute name="icon">
+        <iconset theme="accessories-dictionary"/>
+       </attribute>
+       <attribute name="title">
+        <string>Available Virtual Machines</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QListWidget" name="listWidget">
+          <property name="frameShape">
+           <enum>QFrame::Shape::NoFrame</enum>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>350</width>
+            <height>263</height>
+           </size>
+          </property>
+          <property name="resizeMode">
+           <enum>QListView::ResizeMode::Adjust</enum>
+          </property>
+          <property name="layoutMode">
+           <enum>QListView::LayoutMode::SinglePass</enum>
+          </property>
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <property name="viewMode">
+           <enum>QListView::ViewMode::IconMode</enum>
+          </property>
+          <property name="uniformItemSizes">
+           <bool>true</bool>
+          </property>
+          <property name="sortingEnabled">
+           <bool>true</bool>
+          </property>
+          <item>
+           <property name="text">
+            <string>VM1</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../collabvm-qt-client.qrc">
+             <normaloff>:/Images/Placeholder VM image</normaloff>:/Images/Placeholder VM image</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>VM2</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../collabvm-qt-client.qrc">
+             <normaloff>:/Images/Placeholder VM image</normaloff>:/Images/Placeholder VM image</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>VM3</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../collabvm-qt-client.qrc">
+             <normaloff>:/Images/Placeholder VM image</normaloff>:/Images/Placeholder VM image</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>VM4</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../collabvm-qt-client.qrc">
+             <normaloff>:/Images/Placeholder VM image</normaloff>:/Images/Placeholder VM image</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>VM5</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../collabvm-qt-client.qrc">
+             <normaloff>:/Images/Placeholder VM image</normaloff>:/Images/Placeholder VM image</iconset>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="example_vm_tab">
+       <attribute name="icon">
+        <iconset theme="QIcon::ThemeIcon::Computer"/>
+       </attribute>
+       <attribute name="title">
+        <string>VM 1</string>
+       </attribute>
+      </widget>
      </widget>
     </item>
    </layout>
   </widget>
+  <widget class="QToolBar" name="main_toolbar">
+   <property name="contextMenuPolicy">
+    <enum>Qt::ContextMenuPolicy::PreventContextMenu</enum>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::ToolBarArea::TopToolBarArea</set>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Orientation::Horizontal</enum>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>30</width>
+     <height>40</height>
+    </size>
+   </property>
+   <property name="floatable">
+    <bool>true</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_open_settings"/>
+   <addaction name="action_open_help"/>
+  </widget>
+  <action name="action_open_settings">
+   <property name="icon">
+    <iconset theme="document-properties"/>
+   </property>
+   <property name="text">
+    <string>open_settings</string>
+   </property>
+   <property name="toolTip">
+    <string>Opens settings.</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::PreferencesRole</enum>
+   </property>
+  </action>
+  <action name="action_open_help">
+   <property name="icon">
+    <iconset theme="help-faq"/>
+   </property>
+   <property name="text">
+    <string>open_help</string>
+   </property>
+   <property name="toolTip">
+    <string>Open help stuff</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::AboutRole</enum>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../collabvm-qt-client.qrc"/>

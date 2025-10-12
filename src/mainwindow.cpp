@@ -9,7 +9,7 @@ main_window::main_window(QWidget *parent)
 
     //connect(ui->the_funky_test_button, &QPushButton::clicked, this, [this] { handle_test_button_click(); });
 
-    connect(ui->the_funky_test_button, &QPushButton::clicked, this, [this] {ws::client = new cvm_ws_client(QUrl(QStringLiteral("wss://computernewb.com/collab-vm/vm8")), this); });
+    //connect(ui->the_funky_test_button, &QPushButton::clicked, this, [this] {ws::client = new cvm_ws_client(QUrl(QStringLiteral("wss://computernewb.com/collab-vm/vm8")), this); });
 
 }
 
