@@ -13,7 +13,7 @@
   <property name="minimumSize">
    <size>
     <width>318</width>
-    <height>93</height>
+    <height>318</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -29,7 +29,7 @@
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
-   <layout class="QGridLayout" name="gridLayout">
+   <layout class="QGridLayout" name="main_grid_layout">
     <property name="leftMargin">
      <number>5</number>
     </property>
@@ -66,81 +66,12 @@
        <attribute name="title">
         <string>Available Virtual Machines</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_2">
+       <layout class="QGridLayout" name="vm_list_tab_grid_layout">
         <item row="0" column="0">
-         <widget class="QListWidget" name="listWidget">
+         <widget class="QListView" name="vm_list_view">
           <property name="frameShape">
            <enum>QFrame::Shape::NoFrame</enum>
           </property>
-          <property name="iconSize">
-           <size>
-            <width>350</width>
-            <height>263</height>
-           </size>
-          </property>
-          <property name="resizeMode">
-           <enum>QListView::ResizeMode::Adjust</enum>
-          </property>
-          <property name="layoutMode">
-           <enum>QListView::LayoutMode::SinglePass</enum>
-          </property>
-          <property name="spacing">
-           <number>10</number>
-          </property>
-          <property name="viewMode">
-           <enum>QListView::ViewMode::IconMode</enum>
-          </property>
-          <property name="uniformItemSizes">
-           <bool>true</bool>
-          </property>
-          <property name="sortingEnabled">
-           <bool>true</bool>
-          </property>
-          <item>
-           <property name="text">
-            <string>VM1</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../collabvm-qt-client.qrc">
-             <normaloff>:/Images/Placeholder VM image</normaloff>:/Images/Placeholder VM image</iconset>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>VM2</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../collabvm-qt-client.qrc">
-             <normaloff>:/Images/Placeholder VM image</normaloff>:/Images/Placeholder VM image</iconset>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>VM3</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../collabvm-qt-client.qrc">
-             <normaloff>:/Images/Placeholder VM image</normaloff>:/Images/Placeholder VM image</iconset>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>VM4</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../collabvm-qt-client.qrc">
-             <normaloff>:/Images/Placeholder VM image</normaloff>:/Images/Placeholder VM image</iconset>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>VM5</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../collabvm-qt-client.qrc">
-             <normaloff>:/Images/Placeholder VM image</normaloff>:/Images/Placeholder VM image</iconset>
-           </property>
-          </item>
          </widget>
         </item>
        </layout>
@@ -189,6 +120,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="action_open_settings"/>
+   <addaction name="action_refresh_all_servers"/>
    <addaction name="action_open_help"/>
   </widget>
   <action name="action_open_settings">
@@ -199,7 +131,7 @@
     <string>open_settings</string>
    </property>
    <property name="toolTip">
-    <string>Opens settings.</string>
+    <string>Open settings.</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::PreferencesRole</enum>
@@ -213,10 +145,24 @@
     <string>open_help</string>
    </property>
    <property name="toolTip">
-    <string>Open help stuff</string>
+    <string>Open help stuff.</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::AboutRole</enum>
+   </property>
+  </action>
+  <action name="action_refresh_all_servers">
+   <property name="icon">
+    <iconset theme="sync-synchronizing"/>
+   </property>
+   <property name="text">
+    <string>refresh_all_servers</string>
+   </property>
+   <property name="toolTip">
+    <string>Refresh all CollabVM server instances.</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::ApplicationSpecificRole</enum>
    </property>
   </action>
  </widget>

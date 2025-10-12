@@ -22,7 +22,9 @@ fix_project_version()
 set(SOURCE_FILES
     src/main.cpp
     src/mainwindow.cpp
-    src/ws.cpp
+    src/cvm/ws.cpp
+    src/cvm/cvm.cpp
+    src/cvm/models/user.cpp
 )
 
 add_project_meta(META_FILES_TO_INCLUDE)
