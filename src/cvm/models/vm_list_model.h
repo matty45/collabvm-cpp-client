@@ -17,9 +17,9 @@ public:
 
     cvm::vm vm(const QModelIndex& index) const;
 
-//public Q_SLOTS:
-//    void populate();
+    Q_INVOKABLE void append(const QString& id, const QString& display_name, const QString& thumbnail);
+    Q_INVOKABLE void remove(int row);
 
 private:
-    QList<cvm::vm> vm_list;
+    QList<cvm::vm> m_vm_list;
 };

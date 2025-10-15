@@ -1,6 +1,7 @@
 // CollabVM related structs, etc
 #pragma once
 #include <qlist.h>
+#include <qpixmap.h>
 #include <qstring.h>
 
 namespace cvm
@@ -34,7 +35,7 @@ namespace cvm
 
 		QString m_display_name; // Name of the VM, can contain HTML
 
-		QString m_thumbnail; // Base64 encoded image png/jpeg (Will need to check the magic programatically)
+		QPixmap m_thumbnail; // Image is decoded from base64.
 
 		QList<user> m_users;  // List of users connected to this VM
 
