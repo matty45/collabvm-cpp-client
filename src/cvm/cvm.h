@@ -1,13 +1,16 @@
 // CollabVM related structs, etc
 #pragma once
+#include <qlist.h>
 #include <qstring.h>
 
 namespace cvm
 {
-	class user
+
+	//TODO: Should i make any of these members private or keep them public? I don't know.
+
+	struct user
 	{
-	public:
-		enum rank : int8_t {
+		enum rank : qint8 {
 			unregistered,
 			registered,
 			admin,
@@ -25,7 +28,7 @@ namespace cvm
 		user(const QString& username, const rank& rank);
 	};
 
-	class vm
+	struct vm
 	{
 		QString m_id;
 
@@ -33,8 +36,8 @@ namespace cvm
 
 		QString m_thumbnail; // Base64 encoded image png/jpeg (Will need to check the magic programatically)
 
-	public:
+		QList<user> m_users;  // List of users connected to this VM
+
 		vm(const QString& id, const QString& display_name, const QString& thumbnail);
 	};
-
 }

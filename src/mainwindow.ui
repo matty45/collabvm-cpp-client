@@ -72,6 +72,9 @@
           <property name="frameShape">
            <enum>QFrame::Shape::NoFrame</enum>
           </property>
+          <property name="resizeMode">
+           <enum>QListView::ResizeMode::Adjust</enum>
+          </property>
          </widget>
         </item>
        </layout>
