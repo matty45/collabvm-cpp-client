@@ -14,7 +14,7 @@ namespace cvm
 		m_id = id;
 		m_display_name = display_name;
 
-
+		// Convert base64 to a bytearray to be loaded into the qpixmap.
 		auto result = QByteArray::fromBase64Encoding(thumbnail.toUtf8());
 		Q_ASSERT(result.decodingStatus == QByteArray::Base64DecodingStatus::Ok);
 
