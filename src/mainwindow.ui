@@ -72,6 +72,9 @@
           <property name="frameShape">
            <enum>QFrame::Shape::NoFrame</enum>
           </property>
+          <property name="tabKeyNavigation">
+           <bool>true</bool>
+          </property>
           <property name="showDropIndicator" stdset="0">
            <bool>false</bool>
           </property>
@@ -83,6 +86,9 @@
           </property>
           <property name="horizontalScrollMode">
            <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+          </property>
+          <property name="movement">
+           <enum>QListView::Movement::Free</enum>
           </property>
           <property name="flow">
            <enum>QListView::Flow::LeftToRight</enum>

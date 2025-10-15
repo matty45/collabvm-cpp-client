@@ -1,5 +1,7 @@
 #include "vm_list_model.h"
 
+#include <qfont.h>
+
 
 vm_list_model::vm_list_model(QObject* parent)
     : QAbstractListModel(parent)
@@ -16,14 +18,28 @@ QVariant vm_list_model::data(const QModelIndex& index, int role) const
     Q_ASSERT(index.isValid());
     Q_ASSERT(index.row() <= m_vm_list.size());
 
-    if (role == Qt::DecorationRole)
+
+    switch (role)
     {
+    case Qt::DecorationRole:
+	    {
         cvm::vm vm = m_vm_list.at(index.row());
         return vm.m_thumbnail;
-    }
-    else if (role == Qt::DisplayRole) {
-	    cvm::vm vm = m_vm_list.at(index.row());
+	    }
+
+    case Qt::DisplayRole:
+	    {
+        cvm::vm vm = m_vm_list.at(index.row());
         return vm.m_display_name;
+	    }
+
+    case Qt::FontRole:
+    {
+        QFont font;
+        font.setBold(true);
+        return font;
+    }
+
     }
 
     return {};
