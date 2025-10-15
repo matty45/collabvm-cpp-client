@@ -6,6 +6,6 @@ Plan: Create a full-featured chat-only client, then once that is done, begin to 
 
 ## Todo:
 - [x] Implement VM List UI
-- [] Dynamically update the VM list by gathering relevant information from multiple websocket servers. Also keeping track of what VM belongs to which server.
-- [] Implement VM chat UI.
-- [] Implement configuration settings. (What servers to connect to, themes, etc.) 
+- [ ] Dynamically update the VM list by gathering relevant information from multiple websocket servers. Also keeping track of what VM belongs to which server.
+- [ ] Implement VM chat UI.
+- [ ] Implement configuration settings. (What servers to connect to, themes, etc.) 
