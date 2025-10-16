@@ -4,22 +4,25 @@
 
 #include "src/cvm/cvm.h"
 
-
-class vm_list_model : public QAbstractListModel
+namespace cvm
 {
-    Q_OBJECT
+    class vm_list_model : public QAbstractListModel
+    {
+        Q_OBJECT
 
-public:
-    explicit vm_list_model(QObject* parent = nullptr);
+    public:
+        explicit vm_list_model(QObject* parent = nullptr);
 
-    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+        int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+        QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
-    cvm::vm vm(const QModelIndex& index) const;
+        cvm::vm vm(const QModelIndex& index) const;
 
-    Q_INVOKABLE void append(const QString& id, const QString& display_name, const QString& thumbnail);
-    Q_INVOKABLE void remove(int row);
+        Q_INVOKABLE void append(const QString& id, const QString& display_name, const QString& thumbnail);
+        Q_INVOKABLE void remove(int row);
 
-private:
-    QList<cvm::vm> m_vm_list;
-};
+    private:
+        QList<cvm::vm> m_vm_list;
+    };
+
+}
