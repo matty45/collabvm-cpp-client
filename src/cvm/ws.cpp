@@ -54,13 +54,17 @@ namespace cvm::ws
 
 		//TODO: might be possible to skip sending the opcode through these handlers as its redundant?
 		if (decoded_message[0] == "list")
+		{
 			for (int i = 1; i + 2 < decoded_message.size(); i += 3) {
-				emit on_list_received(decoded_message[i], decoded_message[i + 1], decoded_message[i + 2]);
+				emit signal_list_received(decoded_message[i], decoded_message[i + 1], decoded_message[i + 2]);
 			}
+			m_webSocket.close(); //Close the server for now as we aren't using it for anything else yet.
+		}
+
 
 	}
 
-	void client::on_error_received(QAbstractSocket::SocketError error)
+	void client::on_error_received(QAbstractSocket::SocketError error) const
 	{
 		qCritical() << "Error received:" << m_webSocket.errorString();
 	}

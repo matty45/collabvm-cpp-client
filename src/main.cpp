@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 
     cvm::models::vm_list* vm_list = new cvm::models::vm_list(vm_list_view);
 
-    main_window::connect(main_client, &cvm::ws::client::on_list_received, vm_list, &cvm::models::vm_list::append);
+    main_window::connect(main_client, &cvm::ws::client::signal_list_received, vm_list, &cvm::models::vm_list::append);
 
     vm_list_view->setModel(vm_list);
 
