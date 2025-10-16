@@ -3,12 +3,12 @@
 
 namespace cvm::ws
 {
-	client::client(const QUrl& url, QObject* parent) :
+	client::client(const QUrl& url, QObject* parent, bool fetch_list_only) :
 		QObject(parent)
 	{
 		connect(&m_webSocket, &QWebSocket::disconnected, this, &client::on_disconnected);
 		connect(&m_webSocket, &QWebSocket::connected, this, &client::on_connected);
-		connect(&m_webSocket, &QWebSocket::errorOccurred, this, &client::on_error_recieved);
+		connect(&m_webSocket, &QWebSocket::errorOccurred, this, &client::on_error_received);
 		connect(&m_webSocket, QOverload<const QList<QSslError>&>::of(&QWebSocket::sslErrors), this, &client::on_ssl_errors);
 
 		QNetworkRequest request;
@@ -21,20 +21,30 @@ namespace cvm::ws
 		m_webSocket.open(request);
 	}
 
+	void client::close()
+	{
+		qDebug() << "Closing WebSocket client";
+		m_webSocket.close();
+	}
+
 	void client::on_connected()
 	{
 		qDebug() << "WebSocket connected";
 		connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &client::on_text_message_received);
+
+		// Requesting list
+		m_webSocket.sendTextMessage("4.list;");
 	}
 
 	void client::on_disconnected()
 	{
 		qDebug() << "Disconnected from server";
-		m_webSocket.close();
 	}
 
-	void client::on_text_message_received(QString message)
+	void client::on_text_message_received(const QString& message)
 	{
+		//NOTE: This will be a major focus for optimization later on in this projects development. (hash based lookup tables, etc)
+
 		QStringList decoded_message = guac_utils::decode(message);
 
 		qDebug() << "Message received:" << decoded_message;
@@ -42,9 +52,15 @@ namespace cvm::ws
 		if (decoded_message[0] == "nop")
 			m_webSocket.sendTextMessage("3.nop;");
 
+		//TODO: might be possible to skip sending the opcode through these handlers as its redundant?
+		if (decoded_message[0] == "list")
+			for (int i = 1; i + 2 < decoded_message.size(); i += 3) {
+				emit on_list_received(decoded_message[i], decoded_message[i + 1], decoded_message[i + 2]);
+			}
+
 	}
 
-	void client::on_error_recieved(QAbstractSocket::SocketError error)
+	void client::on_error_received(QAbstractSocket::SocketError error)
 	{
 		qCritical() << "Error received:" << m_webSocket.errorString();
 	}

@@ -11,13 +11,19 @@ namespace cvm::ws
         {
             Q_OBJECT
         public:
-            explicit client(const QUrl& url, QObject* parent = nullptr);
+            explicit client(const QUrl& url, QObject* parent = nullptr, bool fetch_list_only = false);
+
+        signals:
+            void on_list_received(const QString& id, const QString& display_name, const QString& thumbnail);
+
+        public Q_SLOTS:
+            void close();  // Add this  
 
         private Q_SLOTS:
             void on_connected();
-            void on_disconnected();
-            void on_text_message_received(QString message);
-            void on_error_recieved(QAbstractSocket::SocketError error);
+            static void on_disconnected();
+            void on_text_message_received(const QString& message);
+            void on_error_received(QAbstractSocket::SocketError error);
             void on_ssl_errors(const QList<QSslError>& errors) const;
 
         private:
