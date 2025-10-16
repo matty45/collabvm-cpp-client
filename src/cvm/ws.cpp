@@ -3,7 +3,7 @@
 
 namespace cvm::ws
 {
-	client::client(const QUrl& url, QObject* parent, bool fetch_list_only) :
+	client::client(const QUrl& url, QObject* parent) :
 		QObject(parent)
 	{
 		connect(&m_webSocket, &QWebSocket::disconnected, this, &client::on_disconnected);

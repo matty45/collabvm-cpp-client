@@ -11,7 +11,7 @@ namespace cvm::ws
         {
             Q_OBJECT
         public:
-            explicit client(const QUrl& url, QObject* parent = nullptr, bool fetch_list_only = false);
+            explicit client(const QUrl& url, QObject* parent = nullptr);
 
         signals:
             void signal_list_received(const QString& id, const QString& display_name, const QString& thumbnail);
