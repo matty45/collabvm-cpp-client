@@ -4,14 +4,15 @@
 
 #include "src/cvm/cvm.h"
 
-namespace cvm
+namespace cvm::models
 {
-    class vm_list_model : public QAbstractListModel
+
+    class vm_list : public QAbstractListModel
     {
         Q_OBJECT
 
     public:
-        explicit vm_list_model(QObject* parent = nullptr);
+        explicit vm_list(QObject* parent = nullptr);
 
         int rowCount(const QModelIndex& parent = QModelIndex()) const override;
         QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;

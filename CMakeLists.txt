@@ -24,7 +24,7 @@ set(SOURCE_FILES
     src/mainwindow.cpp
     src/cvm/ws.cpp
     src/cvm/cvm.cpp
-    src/cvm/models/vm_list_model.cpp
+    src/cvm/models/vm_list.cpp
 )
 
 add_project_meta(META_FILES_TO_INCLUDE)

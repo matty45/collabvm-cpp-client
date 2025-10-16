@@ -1,20 +1,20 @@
-#include "vm_list_model.h"
+#include "vm_list.h"
 
 #include <qfont.h>
 
-namespace cvm
+namespace cvm::models
 {
-	vm_list_model::vm_list_model(QObject* parent)
+	vm_list::vm_list(QObject* parent)
 		: QAbstractListModel(parent)
 	{
 	}
 
-	int vm_list_model::rowCount(const QModelIndex&) const
+	int vm_list::rowCount(const QModelIndex&) const
 	{
 		return m_vm_list.size();
 	}
 
-	QVariant vm_list_model::data(const QModelIndex& index, int role) const
+	QVariant vm_list::data(const QModelIndex& index, int role) const
 	{
 		Q_ASSERT(index.isValid());
 		Q_ASSERT(index.row() <= m_vm_list.size());
@@ -46,12 +46,12 @@ namespace cvm
 		return {};
 	}
 
-	cvm::vm vm_list_model::vm(const QModelIndex& index) const
+	cvm::vm vm_list::vm(const QModelIndex& index) const
 	{
 		return m_vm_list.at(index.row());
 	}
 
-	void vm_list_model::append(const QString& id, const QString& display_name, const QString& thumbnail)
+	void vm_list::append(const QString& id, const QString& display_name, const QString& thumbnail)
 	{
 		int row = 0;
 		while (row < m_vm_list.count() && id > m_vm_list.at(row).m_id)
@@ -61,7 +61,7 @@ namespace cvm
 		endInsertRows();
 	}
 
-	void vm_list_model::remove(int row)
+	void vm_list::remove(int row)
 	{
 		if (row < 0 || row >= m_vm_list.count())
 			return;

@@ -1,40 +1,39 @@
 #include "ws.h"
 #include "src/guac.h"
 
-namespace cvm
+namespace cvm::ws
 {
-	ws_client::ws_client(const QUrl& url, QObject* parent) :
+	client::client(const QUrl& url, QObject* parent) :
 		QObject(parent)
 	{
-		connect(&m_webSocket, &QWebSocket::disconnected, this, &ws_client::on_disconnected);
-		connect(&m_webSocket, &QWebSocket::connected, this, &ws_client::on_connected);
-		connect(&m_webSocket, &QWebSocket::errorOccurred, this, &ws_client::on_error_recieved);
-		connect(&m_webSocket, QOverload<const QList<QSslError>&>::of(&QWebSocket::sslErrors), this, &ws_client::on_ssl_errors);
+		connect(&m_webSocket, &QWebSocket::disconnected, this, &client::on_disconnected);
+		connect(&m_webSocket, &QWebSocket::connected, this, &client::on_connected);
+		connect(&m_webSocket, &QWebSocket::errorOccurred, this, &client::on_error_recieved);
+		connect(&m_webSocket, QOverload<const QList<QSslError>&>::of(&QWebSocket::sslErrors), this, &client::on_ssl_errors);
 
 		QNetworkRequest request;
 		request.setUrl(url);
 		request.setRawHeader("Origin", "https://computernewb.com");
 		request.setRawHeader("Sec-WebSocket-Protocol", "guacamole");
 
-		qDebug() << "WebSocket server:" << url;
-		qDebug() << "WebSocket server:" << request.headers();
+		qDebug() << "Connecting to websocket server:" << url;
 
 		m_webSocket.open(request);
 	}
 
-	void ws_client::on_connected()
+	void client::on_connected()
 	{
 		qDebug() << "WebSocket connected";
-		connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &ws_client::on_text_message_received);
+		connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &client::on_text_message_received);
 	}
 
-	void ws_client::on_disconnected()
+	void client::on_disconnected()
 	{
 		qDebug() << "Disconnected from server";
 		m_webSocket.close();
 	}
 
-	void ws_client::on_text_message_received(QString message)
+	void client::on_text_message_received(QString message)
 	{
 		QStringList decoded_message = guac_utils::decode(message);
 
@@ -45,19 +44,15 @@ namespace cvm
 
 	}
 
-	void ws_client::on_error_recieved(QAbstractSocket::SocketError error)
+	void client::on_error_recieved(QAbstractSocket::SocketError error)
 	{
 		qCritical() << "Error received:" << m_webSocket.errorString();
 	}
 
-	void ws_client::on_ssl_errors(const QList<QSslError>& errors)
+	void client::on_ssl_errors(const QList<QSslError>& errors) const
 	{
 		Q_UNUSED(errors)
 
-			// WARNING: Never ignore SSL errors in production code.
-			// The proper way to handle self-signed certificates is to add a custom root
-			// to the CA store.
-
-			m_webSocket.ignoreSslErrors();
+		qCritical() << "SSL Error received:" << m_webSocket.errorString();
 	}
 }
