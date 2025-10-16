@@ -47,6 +47,14 @@ set_target_properties(${PROJECT_NAME}
 
 target_precompile_headers(${PROJECT_NAME} INTERFACE QtWidgets.h)
 
+target_precompile_headers(${PROJECT_NAME} PRIVATE   
+    src/cvm/models/vm_list.h
+    src/cvm/ws.h  
+    src/cvm/cvm.h  
+    src/guac.h
+    src/mainwindow.h
+)  
+
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets Qt::WebSockets Qt6::Concurrent)
 
 install(
