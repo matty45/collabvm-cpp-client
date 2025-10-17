@@ -14,10 +14,9 @@ main_window::main_window(QWidget *parent)
 
     cvm::models::vm_list* vm_list = new cvm::models::vm_list(ui->vm_list_view);
 
-    main_window::connect(main_client, &cvm::ws::client::signal_list_received, vm_list, &cvm::models::vm_list::append);
+    connect(main_client, &cvm::ws::client::signal_list_received, vm_list, &cvm::models::vm_list::append);
 
     ui->vm_list_view->setModel(vm_list);
-
 }
 
 // this function triggers on window close/deconstruct

@@ -2,8 +2,6 @@
 #include <QListView>
 
 #include "mainwindow.h"
-#include "cvm/ws.h"
-#include "cvm/models/vm_list.h"
 
 int main(int argc, char *argv[])
 {

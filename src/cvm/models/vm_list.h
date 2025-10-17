@@ -17,7 +17,7 @@ namespace cvm::models
         int rowCount(const QModelIndex& parent = QModelIndex()) const override;
         QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
-        cvm::vm vm(const QModelIndex& index) const;
+        vm vm(const QModelIndex& index) const;
 
         Q_INVOKABLE void append(const QString& id, const QString& display_name, const QString& thumbnail);
         Q_INVOKABLE void remove(int row);

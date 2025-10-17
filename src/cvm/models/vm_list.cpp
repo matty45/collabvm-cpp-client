@@ -46,7 +46,7 @@ namespace cvm::models
 		return {};
 	}
 
-	cvm::vm vm_list::vm(const QModelIndex& index) const
+	vm vm_list::vm(const QModelIndex& index) const
 	{
 		return m_vm_list.at(index.row());
 	}

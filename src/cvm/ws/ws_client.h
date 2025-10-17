@@ -3,8 +3,6 @@
 #include <qobject.h>
 #include <QtWebSockets/QWebSocket>
 
-#include "cvm.h"
-
 namespace cvm::ws
 {
         class client : public QObject
@@ -27,6 +25,6 @@ namespace cvm::ws
             void on_ssl_errors(const QList<QSslError>& errors) const;
 
         private:
-            QWebSocket m_webSocket;
+            QSharedPointer<QWebSocket> m_webSocket;
         };
 }
