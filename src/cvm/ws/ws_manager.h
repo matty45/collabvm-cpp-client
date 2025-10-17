@@ -5,26 +5,26 @@
 
 namespace cvm::ws
 {
-        class client : public QObject
+        class client_manager : public QObject
         {
             Q_OBJECT
         public:
-            explicit client(const QUrl& url, QObject* parent = nullptr);
+            explicit client_manager(QObject* parent = nullptr);
+            ~client_manager();
+            void add_client(QUrl url);
 
         signals:
             void signal_list_received(const QString& id, const QString& display_name, const QString& thumbnail);
-
-        public Q_SLOTS:
-            void close() const;  // Add this  
+            void closed();
 
         private Q_SLOTS:
             void on_connected();
-            static void on_disconnected();
+        	void on_disconnected();
             void on_text_message_received(const QString& message);
             void on_error_received(QAbstractSocket::SocketError error) const;
             void on_ssl_errors(const QList<QSslError>& errors) const;
 
         private:
-            QSharedPointer<QWebSocket> m_webSocket;
+            QList<QWebSocket*> m_clients;
         };
 }

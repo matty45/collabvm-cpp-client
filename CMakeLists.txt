@@ -22,7 +22,7 @@ fix_project_version()
 set(SOURCE_FILES
     src/main.cpp
     src/mainwindow.cpp
-    src/cvm/ws/ws_client.cpp
+    src/cvm/ws/ws_manager.cpp
     src/cvm/cvm.cpp
     src/cvm/models/vm_list.cpp
     
@@ -50,7 +50,7 @@ target_precompile_headers(${PROJECT_NAME} INTERFACE QtWidgets.h)
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE   
     src/cvm/models/vm_list.h
-    src/cvm/ws/ws_client.h  
+    src/cvm/ws/ws_manager.h  
     src/cvm/cvm.h  
     src/guac.h
     src/mainwindow.h
