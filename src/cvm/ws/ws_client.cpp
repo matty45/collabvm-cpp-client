@@ -24,7 +24,7 @@ namespace cvm::ws
 		m_webSocket->open(request);
 	}
 
-	void client::close()
+	void client::close() const
 	{
 		qDebug() << "Closing WebSocket client";
 		m_webSocket->close();

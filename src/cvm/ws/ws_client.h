@@ -15,7 +15,7 @@ namespace cvm::ws
             void signal_list_received(const QString& id, const QString& display_name, const QString& thumbnail);
 
         public Q_SLOTS:
-            void close();  // Add this  
+            void close() const;  // Add this  
 
         private Q_SLOTS:
             void on_connected();
