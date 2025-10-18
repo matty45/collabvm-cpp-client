@@ -21,11 +21,11 @@ fix_project_version()
 
 set(SOURCE_FILES
     src/main.cpp
-    src/ui/mainwindow.cpp
+    src/ui/main_window.cpp
     src/cvm/ws/ws_manager.cpp
     src/cvm/cvm.cpp
     src/cvm/models/vm_list.cpp
-    
+    src/ui/settings_dialog.cpp
 )
 
 add_project_meta(META_FILES_TO_INCLUDE)
@@ -46,14 +46,12 @@ set_target_properties(${PROJECT_NAME}
         CXX_STANDARD_REQUIRED ON
 )
 
-target_precompile_headers(${PROJECT_NAME} INTERFACE QtWidgets.h)
+target_precompile_headers(${PROJECT_NAME} INTERFACE QtWidgets.h QtWebsockets.h QtConcurrent.h)
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE   
     src/cvm/models/vm_list.h
-    src/cvm/ws/ws_manager.h  
     src/cvm/cvm.h  
     src/guac.h
-    src/ui/mainwindow.h
 )  
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets Qt::WebSockets Qt6::Concurrent)

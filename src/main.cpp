@@ -1,7 +1,7 @@
 #include <QApplication>
 #include <QListView>
 
-#include "ui/mainwindow.h"
+#include "ui/main_window.h"
 
 int main(int argc, char *argv[])
 {

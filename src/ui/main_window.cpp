@@ -1,5 +1,8 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "main_window.h"
+
+#include "settings_dialog.h"
+#include "ui_main_window.h"
+#include "src/cvm/ws/ws_manager.h"
 
 main_window::main_window(QWidget *parent)
 : QMainWindow(parent), ui(new Ui::main_window)
@@ -8,6 +11,7 @@ main_window::main_window(QWidget *parent)
     
     connect(ui->tabs, &QTabWidget::tabCloseRequested, ui->tabs, &QTabWidget::removeTab);
     connect(ui->action_debug_button, &QAction::triggered, ui->tabs, [this]() { delete ui->tabs; });
+    connect(ui->action_open_settings, &QAction::triggered, this, &main_window::on_action_open_settings_triggered);
 
     // Create websocket client and connect to hardcoded servers for now
     //TODO: Connect to a predefined list of servers that can be configured from within the user interface.
@@ -33,5 +37,11 @@ main_window::main_window(QWidget *parent)
 // this function triggers on window close/deconstruct
 main_window::~main_window()
 {
-    
+}
+
+void main_window::on_action_open_settings_triggered()
+{
+    settings_dialog* settings = new settings_dialog(this);
+
+    settings->exec();
 }
