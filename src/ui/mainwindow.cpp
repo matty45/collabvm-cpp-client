@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "cvm/ws/ws_manager.h"
 
 main_window::main_window(QWidget *parent)
 : QMainWindow(parent), ui(new Ui::main_window)
