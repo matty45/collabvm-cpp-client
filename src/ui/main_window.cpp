@@ -10,13 +10,18 @@ main_window::main_window(QWidget *parent)
     ui->setupUi(this);
     
     connect(ui->tabs, &QTabWidget::tabCloseRequested, ui->tabs, &QTabWidget::removeTab);
-    connect(ui->action_debug_button, &QAction::triggered, ui->tabs, [this]() { delete ui->tabs; });
-    connect(ui->action_open_settings, &QAction::triggered, this, &main_window::on_action_open_settings_triggered);
+
+    connect(ui->action_open_settings, &QAction::triggered, this, [=] {
+    	settings_dialog* settings = new settings_dialog(this);
+
+        settings->exec();
+    });
 
     // Create websocket client and connect to hardcoded servers for now
     //TODO: Connect to a predefined list of servers that can be configured from within the user interface.
     cvm::ws::client_manager* manager = new cvm::ws::client_manager(ui->vm_list_view);
 
+    manager->add_client(QUrl("wss://computernewb.com/collab-vm/vm0"));
     manager->add_client(QUrl("wss://computernewb.com/collab-vm/vm1"));
     manager->add_client(QUrl("wss://computernewb.com/collab-vm/vm2"));
     manager->add_client(QUrl("wss://computernewb.com/collab-vm/vm3"));
@@ -37,11 +42,4 @@ main_window::main_window(QWidget *parent)
 // this function triggers on window close/deconstruct
 main_window::~main_window()
 {
-}
-
-void main_window::on_action_open_settings_triggered()
-{
-    settings_dialog* settings = new settings_dialog(this);
-
-    settings->exec();
 }
