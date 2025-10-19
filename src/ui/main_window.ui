@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>994</width>
-    <height>759</height>
+    <width>1313</width>
+    <height>887</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -215,7 +215,7 @@
   </action>
  </widget>
  <resources>
-  <include location="../collabvm-qt-client.qrc"/>
+  <include location="../../collabvm-qt-client.qrc"/>
  </resources>
  <connections/>
 </ui>

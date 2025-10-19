@@ -13,8 +13,9 @@ set(CMAKE_AUTORCC ON)
 include(QtCommon)
 
 # Basic information about project
+set(PROJECT_DESC "A client for interacting with CollabVM servers.")
 
-project(collabvm-qt-client VERSION 1.0)
+project(collabvm-qt-client VERSION 0.1)
 
 # Set PROJECT_VERSION_PATCH and PROJECT_VERSION_TWEAK to 0 if not present, needed by add_project_meta
 fix_project_version()

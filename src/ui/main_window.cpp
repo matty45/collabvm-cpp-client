@@ -11,11 +11,15 @@ main_window::main_window(QWidget *parent)
     
     connect(ui->tabs, &QTabWidget::tabCloseRequested, ui->tabs, &QTabWidget::removeTab);
 
-    connect(ui->action_open_settings, &QAction::triggered, this, [=] {
+    connect(ui->action_open_settings, &QAction::triggered, this, [this] {
     	settings_dialog* settings = new settings_dialog(this);
 
         settings->exec();
     });
+
+    connect(ui->action_debug_button, &QAction::triggered, this, [this] {
+        qDebug() << "Mainwindow size: " << this->size();
+        });
 
     // Create websocket client and connect to hardcoded servers for now
     //TODO: Connect to a predefined list of servers that can be configured from within the user interface.
