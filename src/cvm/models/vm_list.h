@@ -21,6 +21,7 @@ namespace cvm::models
 
         Q_INVOKABLE void append(const QString& id, const QString& display_name, const QString& thumbnail);
         Q_INVOKABLE void remove(int row);
+        Q_INVOKABLE void clear();
 
     private:
         QList<cvm::vm> m_vm_list;

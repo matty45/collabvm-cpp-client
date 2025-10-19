@@ -4,7 +4,7 @@
 
 namespace cvm::ws
 {
-	client_manager::client_manager( QObject* parent) :
+	client_manager::client_manager(QObject* parent) :
 		QObject(parent)
 	{
 	}
@@ -14,9 +14,8 @@ namespace cvm::ws
 
 		qDebug() << "Shutting down client manager!";
 
-		for (QWebSocket* socket : m_clients) {
+		for (QWebSocket* socket : m_clients)
 			socket->close();
-		}
 
 		m_clients.squeeze();
 
@@ -27,9 +26,7 @@ namespace cvm::ws
 	QWebSocket* client_manager::find_client_by_url(const QUrl& url) const
 	{
 		if (m_clients.contains(url))
-		{
 			return m_clients.value(url);
-		}
 
 		return nullptr;
 	}
@@ -37,7 +34,6 @@ namespace cvm::ws
 	// Researched how KDE manages multiple websockets. https://github.com/KDE/tokodon/blob/master/src/account/account.h 
 	void client_manager::add_client(const QUrl& url)
 	{
-		qDebug() << "Scheme:" << url.scheme();
 
 		if (url.scheme() != "wss" && url.scheme() != "ws")
 		{
@@ -62,7 +58,7 @@ namespace cvm::ws
 			);
 			return;
 		}
-			
+
 
 		auto socket = new QWebSocket();
 		socket->setParent(this);
@@ -72,10 +68,11 @@ namespace cvm::ws
 		connect(socket, &QWebSocket::errorOccurred, this, &client_manager::on_error_received);
 		connect(socket, QOverload<const QList<QSslError>&>::of(&QWebSocket::sslErrors), this, &client_manager::on_ssl_errors);
 
-		m_clients.insert(url,socket);
+		m_clients.insert(url, socket);
 	}
 
-	void client_manager::connect_client(const QUrl& url)
+
+	void client_manager::connect_client(const QUrl& url) const
 	{
 		QWebSocket* socket = find_client_by_url(url);
 
@@ -99,7 +96,7 @@ namespace cvm::ws
 		request.setRawHeader("Sec-WebSocket-Protocol", "guacamole");
 
 
-		qDebug() << "Connecting to websocket server:" << url;
+		qDebug() << "WS: Connecting to websocket server:" << url;
 
 
 		socket->open(request);
@@ -109,24 +106,17 @@ namespace cvm::ws
 	{
 		QWebSocket* p_client = qobject_cast<QWebSocket*>(sender());
 
-		qDebug() << "WebSocket connected";
+		qDebug() << "WS: WebSocket connected";
 		connect(p_client, &QWebSocket::textMessageReceived, this, &client_manager::on_text_message_received);
 
 		// Requesting list
 		p_client->sendTextMessage("4.list;");
 	}
 
-	void client_manager::on_disconnected()
+	void client_manager::on_disconnected() const
 	{
-		qDebug() << "Disconnected from server";
-
 		QWebSocket* p_client = qobject_cast<QWebSocket*>(sender());
-
-		if (p_client)
-		{
-			m_clients.remove(p_client->requestUrl());
-			p_client->deleteLater();
-		}
+		qDebug() << "WS: Disconnected from server: " << p_client->requestUrl();
 	}
 
 	void client_manager::on_text_message_received(const QString& message)
@@ -137,14 +127,12 @@ namespace cvm::ws
 
 		QStringList decoded_message = guac_utils::decode(message);
 
-		qDebug() << "Message received:" << decoded_message;
-
 		if (decoded_message[0] == "nop")
 		{
 			p_client->sendTextMessage("3.nop;");
 			return;
 		}
-			
+
 
 		//TODO: might be possible to skip sending the opcode through these handlers as its redundant?
 		if (decoded_message[0] == "list")
@@ -154,6 +142,8 @@ namespace cvm::ws
 			}
 			return;
 		}
+
+		qDebug() << "WS: Unimplemented/Unknown message received:" << decoded_message;
 	}
 
 	void client_manager::on_error_received(QAbstractSocket::SocketError error) const
@@ -163,7 +153,7 @@ namespace cvm::ws
 		QMessageBox::critical(
 			nullptr,
 			"Connection Error",
-			QString("%1: %2").arg(p_client->requestUrl().url(),p_client->errorString()),
+			QString("%1: %2").arg(p_client->requestUrl().url(), p_client->errorString()),
 			QMessageBox::Ok
 		);
 	}
@@ -172,7 +162,7 @@ namespace cvm::ws
 	{
 		Q_UNUSED(errors)
 
-		QWebSocket* p_client = qobject_cast<QWebSocket*>(sender());
+			QWebSocket* p_client = qobject_cast<QWebSocket*>(sender());
 
 		QMessageBox::critical(
 			nullptr,

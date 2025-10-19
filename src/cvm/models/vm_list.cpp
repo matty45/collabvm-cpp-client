@@ -70,5 +70,17 @@ namespace cvm::models
 		m_vm_list.removeAt(row);
 		endRemoveRows();
 	}
+
+	void vm_list::clear()
+	{
+		if (m_vm_list.isEmpty())
+			return;
+
+		beginResetModel();
+		m_vm_list.clear();
+		endResetModel();
+
+		m_vm_list.squeeze();
+	}
 }
 

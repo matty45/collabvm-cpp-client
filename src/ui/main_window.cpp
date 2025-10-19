@@ -20,22 +20,6 @@ main_window::main_window(QWidget* parent)
 	// Create settings manager
 	settings_manager* s_manager = new settings_manager(this);
 
-	//connect(ui->action_debug_button, &QAction::triggered, s_manager, [s_manager] {
-	//	QStringList test = {
-	//	"wss://computernewb.com/collab-vm/vm1",
-	//	"wss://computernewb.com/collab-vm/vm2",
-	//	"wss://computernewb.com/collab-vm/vm3",
-	//	"wss://computernewb.com/collab-vm/vm4",
-	//	"wss://computernewb.com/collab-vm/vm5",
-	//	"wss://computernewb.com/collab-vm/vm6",
-	//	"wss://computernewb.com/collab-vm/vm7",
-	//	"wss://computernewb.com/collab-vm/vm8",
-	//	"wss://computernewb.com/collab-vm/vm9"
-	//	};
-
-	//	s_manager->save_servers(test);
-	//	});
-
 	// Create websocket client manager
 	cvm::ws::client_manager* c_manager = new cvm::ws::client_manager(ui->vm_list_view);
 
