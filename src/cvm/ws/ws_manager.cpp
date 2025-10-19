@@ -18,7 +18,20 @@ namespace cvm::ws
 			socket->close();
 		}
 
+		m_clients.squeeze();
+
 		qDeleteAll(m_clients.begin(), m_clients.end());
+
+	}
+
+	QWebSocket* client_manager::find_client_by_url(const QUrl& url) const
+	{
+		if (m_clients.contains(url))
+		{
+			return m_clients.value(url);
+		}
+
+		return nullptr;
 	}
 
 	// Researched how KDE manages multiple websockets. https://github.com/KDE/tokodon/blob/master/src/account/account.h 
@@ -39,19 +52,17 @@ namespace cvm::ws
 			return;
 		}
 
-		for (QWebSocket* socket : m_clients) {
-			if (socket && socket->requestUrl() == url) {
-
-				QMessageBox::critical(
-					nullptr,
-					"Websocket client creation error",
-					QString("%1 already exists.").arg(url.url()),
-					QMessageBox::Ok
-				);
-
-				return;
-			}
+		if (find_client_by_url(url))
+		{
+			QMessageBox::critical(
+				nullptr,
+				"Websocket client creation error",
+				QString("%1 already exists.").arg(url.url()),
+				QMessageBox::Ok
+			);
+			return;
 		}
+			
 
 		auto socket = new QWebSocket();
 		socket->setParent(this);
@@ -62,6 +73,36 @@ namespace cvm::ws
 		connect(socket, QOverload<const QList<QSslError>&>::of(&QWebSocket::sslErrors), this, &client_manager::on_ssl_errors);
 
 		m_clients.insert(url,socket);
+	}
+
+	void client_manager::connect_client(const QUrl& url)
+	{
+		QWebSocket* socket = find_client_by_url(url);
+
+		if (!socket)
+		{
+			QMessageBox::critical(
+				nullptr,
+				"Websocket client connection error",
+				QString("%1 does not exist.").arg(url.url()),
+				QMessageBox::Ok
+			);
+			return;
+		}
+
+		QNetworkRequest request;
+
+		request.setUrl(url);
+
+		request.setRawHeader("Origin", "https://computernewb.com");
+
+		request.setRawHeader("Sec-WebSocket-Protocol", "guacamole");
+
+
+		qDebug() << "Connecting to websocket server:" << url;
+
+
+		socket->open(request);
 	}
 
 	void client_manager::on_connected()

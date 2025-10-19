@@ -43,6 +43,7 @@ main_window::main_window(QWidget* parent)
 	QStringList servers = s_manager->get_servers();
 	for (const QString& url : servers) {
 		c_manager->add_client(QUrl(url));
+		c_manager->connect_client(QUrl(url));
 	}
 
 	// Setup VM list.

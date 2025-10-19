@@ -11,7 +11,9 @@ namespace cvm::ws
         public:
             explicit client_manager(QObject* parent = nullptr);
             ~client_manager();
+            QWebSocket* find_client_by_url(const QUrl& url) const;
             void add_client(const QUrl& url);
+            void connect_client(const QUrl& url);
 
         signals:
             void signal_list_received(const QString& id, const QString& display_name, const QString& thumbnail);
