@@ -1,7 +1,7 @@
 #include "main_window.h"
 
-#include "settings_dialog.h"
 #include "ui_main_window.h"
+#include "settings/settings_dialog.h"
 #include "src/cvm/ws/ws_manager.h"
 #include "src/settings/settings_manager.h"
 
