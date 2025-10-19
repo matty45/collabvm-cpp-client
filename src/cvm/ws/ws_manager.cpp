@@ -53,7 +53,6 @@ namespace cvm::ws
 			}
 		}
 
-		//TODO: Move connection logic into its own function.
 		auto socket = new QWebSocket();
 		socket->setParent(this);
 
@@ -62,16 +61,7 @@ namespace cvm::ws
 		connect(socket, &QWebSocket::errorOccurred, this, &client_manager::on_error_received);
 		connect(socket, QOverload<const QList<QSslError>&>::of(&QWebSocket::sslErrors), this, &client_manager::on_ssl_errors);
 
-		QNetworkRequest request;
-		request.setUrl(url);
-		request.setRawHeader("Origin", "https://computernewb.com");
-		request.setRawHeader("Sec-WebSocket-Protocol", "guacamole");
-
-		qDebug() << "Connecting to websocket server:" << url;
-
-		socket->open(request);
-
-		m_clients.append(socket);
+		m_clients.insert(url,socket);
 	}
 
 	void client_manager::on_connected()
@@ -93,7 +83,7 @@ namespace cvm::ws
 
 		if (p_client)
 		{
-			m_clients.removeAll(p_client);
+			m_clients.remove(p_client->requestUrl());
 			p_client->deleteLater();
 		}
 	}

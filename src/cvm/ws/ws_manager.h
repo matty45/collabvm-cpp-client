@@ -25,6 +25,6 @@ namespace cvm::ws
             void on_ssl_errors(const QList<QSslError>& errors) const;
 
         private:
-            QList<QWebSocket*> m_clients;
+            QHash<QUrl,QWebSocket*> m_clients;
         };
 }
