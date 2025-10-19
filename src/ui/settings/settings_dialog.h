@@ -11,7 +11,7 @@ class settings_dialog : public QDialog {
     Q_OBJECT
 
 public:
-    explicit settings_dialog(QWidget *parent = 0);
+    explicit settings_dialog(QWidget *parent = nullptr);
     virtual ~settings_dialog();
 
 private:

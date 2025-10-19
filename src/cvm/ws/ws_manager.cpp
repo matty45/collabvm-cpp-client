@@ -17,8 +17,6 @@ namespace cvm::ws
 		for (QWebSocket* socket : m_clients)
 			socket->close();
 
-		m_clients.squeeze();
-
 		qDeleteAll(m_clients.begin(), m_clients.end());
 
 	}

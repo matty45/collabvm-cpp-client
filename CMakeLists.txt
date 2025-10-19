@@ -28,6 +28,7 @@ set(SOURCE_FILES
     src/cvm/models/vm_list.cpp
     src/ui/settings/settings_dialog.cpp
     src/settings/settings_manager.cpp
+    src/ui/vms/vm_window.cpp
 )
 
 add_project_meta(META_FILES_TO_INCLUDE)
