@@ -26,7 +26,7 @@ set(SOURCE_FILES
     src/cvm/ws/ws_manager.cpp
     src/cvm/cvm.cpp
     src/cvm/models/vm_list.cpp
-    src/ui/settings_dialog.cpp
+    src/ui/settings/settings_dialog.cpp
     src/settings/settings_manager.cpp
 )
 
