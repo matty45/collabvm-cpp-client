@@ -3,44 +3,55 @@
 #include "settings_dialog.h"
 #include "ui_main_window.h"
 #include "src/cvm/ws/ws_manager.h"
+#include "src/settings/settings_manager.h"
 
-main_window::main_window(QWidget *parent)
-: QMainWindow(parent), ui(new Ui::main_window)
+main_window::main_window(QWidget* parent)
+	: QMainWindow(parent), ui(new Ui::main_window)
 {
-    ui->setupUi(this);
-    
-    connect(ui->tabs, &QTabWidget::tabCloseRequested, ui->tabs, &QTabWidget::removeTab);
 
-    connect(ui->action_open_settings, &QAction::triggered, this, [this] {
-    	settings_dialog* settings = new settings_dialog(this);
+	ui->setupUi(this);
 
-        settings->exec();
-    });
+	connect(ui->tabs, &QTabWidget::tabCloseRequested, ui->tabs, &QTabWidget::removeTab);
 
-    connect(ui->action_debug_button, &QAction::triggered, this, [this] {
-        qDebug() << "Mainwindow size: " << this->size();
-        });
+	connect(ui->action_open_settings, &QAction::triggered, this, [this] {
+		settings_dialog* settings = new settings_dialog(this);
+		settings->setAttribute(Qt::WA_DeleteOnClose);
+		settings->exec();
+		});
 
-    // Create websocket client and connect to hardcoded servers for now
-    //TODO: Connect to a predefined list of servers that can be configured from within the user interface.
-    cvm::ws::client_manager* manager = new cvm::ws::client_manager(ui->vm_list_view);
+	// Create settings manager
+	settings_manager* s_manager = new settings_manager(this);
 
-    manager->add_client(QUrl("wss://computernewb.com/collab-vm/vm0"));
-    manager->add_client(QUrl("wss://computernewb.com/collab-vm/vm1"));
-    manager->add_client(QUrl("wss://computernewb.com/collab-vm/vm2"));
-    manager->add_client(QUrl("wss://computernewb.com/collab-vm/vm3"));
-    manager->add_client(QUrl("wss://computernewb.com/collab-vm/vm4"));
-    manager->add_client(QUrl("wss://computernewb.com/collab-vm/vm5"));
-    manager->add_client(QUrl("wss://computernewb.com/collab-vm/vm6"));
-    manager->add_client(QUrl("wss://computernewb.com/collab-vm/vm7"));
-    manager->add_client(QUrl("wss://computernewb.com/collab-vm/vm8"));
-    manager->add_client(QUrl("wss://computernewb.com/collab-vm/vm9"));
+	connect(ui->action_debug_button, &QAction::triggered, s_manager, [s_manager] {
+		QStringList test = {
+		"wss://computernewb.com/collab-vm/vm1",
+		"wss://computernewb.com/collab-vm/vm2",
+		"wss://computernewb.com/collab-vm/vm3",
+		"wss://computernewb.com/collab-vm/vm4",
+		"wss://computernewb.com/collab-vm/vm5",
+		"wss://computernewb.com/collab-vm/vm6",
+		"wss://computernewb.com/collab-vm/vm7",
+		"wss://computernewb.com/collab-vm/vm8",
+		"wss://computernewb.com/collab-vm/vm9"
+		};
 
-    cvm::models::vm_list* vm_list = new cvm::models::vm_list(ui->vm_list_view);
+		s_manager->save_servers(test);
+		});
 
-    connect(manager, &cvm::ws::client_manager::signal_list_received, vm_list, &cvm::models::vm_list::append);
+	// Create websocket client manager
+	cvm::ws::client_manager* c_manager = new cvm::ws::client_manager(ui->vm_list_view);
 
-    ui->vm_list_view->setModel(vm_list);
+	// Load list of servers from settings and connect to them.
+	QStringList servers = s_manager->get_servers();
+	for (const QString& url : servers) {
+		c_manager->add_client(QUrl(url));
+	}
+
+	// Setup VM list.
+	cvm::models::vm_list* vm_list = new cvm::models::vm_list(ui->vm_list_view);
+	connect(c_manager, &cvm::ws::client_manager::signal_list_received, vm_list, &cvm::models::vm_list::append);
+	ui->vm_list_view->setModel(vm_list);
+
 }
 
 // this function triggers on window close/deconstruct

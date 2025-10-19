@@ -1,5 +1,4 @@
 #include <QApplication>
-#include <QListView>
 
 #include "ui/main_window.h"
 

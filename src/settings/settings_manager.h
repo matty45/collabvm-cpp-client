@@ -1,0 +1,20 @@
+#pragma once
+
+#include <QSettings>
+
+class settings_manager : public QObject
+{
+    Q_OBJECT
+public:
+    explicit settings_manager(QObject* parent = nullptr);
+    ~settings_manager();
+
+    QStringList get_servers() const;
+    void save_servers(const QStringList& urls);
+
+signals:
+    void server_urls_changed(const QStringList& urls);
+
+private:
+    QSettings settings;
+};

@@ -29,6 +29,7 @@ namespace cvm::ws
 			}
 		}
 
+		//TODO: Move connection logic into its own function.
 		auto socket = new QWebSocket();
 		socket->setParent(this);
 
