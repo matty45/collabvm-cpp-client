@@ -1,5 +1,6 @@
 #include "ws_manager.h"
 #include "src/guac.h"
+#include "QMessageBox"
 
 namespace cvm::ws
 {
@@ -21,10 +22,33 @@ namespace cvm::ws
 	}
 
 	// Researched how KDE manages multiple websockets. https://github.com/KDE/tokodon/blob/master/src/account/account.h 
-	void client_manager::add_client(QUrl url)
+	void client_manager::add_client(const QUrl& url)
 	{
+		qDebug() << "Scheme:" << url.scheme();
+
+		if (url.scheme() != "wss" && url.scheme() != "ws")
+		{
+
+			QMessageBox::critical(
+				nullptr,
+				"Websocket client creation error",
+				QString("Invalid URL: %1 does not have wss:// or ws:// as its prefix!").arg(url.url()),
+				QMessageBox::Ok
+			);
+
+			return;
+		}
+
 		for (QWebSocket* socket : m_clients) {
 			if (socket && socket->requestUrl() == url) {
+
+				QMessageBox::critical(
+					nullptr,
+					"Websocket client creation error",
+					QString("%1 already exists.").arg(url.url()),
+					QMessageBox::Ok
+				);
+
 				return;
 			}
 		}
@@ -105,7 +129,12 @@ namespace cvm::ws
 	{
 		QWebSocket* p_client = qobject_cast<QWebSocket*>(sender());
 
-		qCritical() << "Error received:" << p_client->errorString();
+		QMessageBox::critical(
+			nullptr,
+			"Connection Error",
+			QString("%1: %2").arg(p_client->requestUrl().url(),p_client->errorString()),
+			QMessageBox::Ok
+		);
 	}
 
 	void client_manager::on_ssl_errors(const QList<QSslError>& errors) const
@@ -114,6 +143,12 @@ namespace cvm::ws
 
 		QWebSocket* p_client = qobject_cast<QWebSocket*>(sender());
 
-		qCritical() << "SSL Error received:" << p_client->errorString();
+		QMessageBox::critical(
+			nullptr,
+			"SSL Error",
+			QString("%1: %2").arg(p_client->requestUrl().url(), p_client->errorString()),
+			QMessageBox::Ok
+		);
+
 	}
 }

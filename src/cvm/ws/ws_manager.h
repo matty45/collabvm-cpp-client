@@ -11,7 +11,7 @@ namespace cvm::ws
         public:
             explicit client_manager(QObject* parent = nullptr);
             ~client_manager();
-            void add_client(QUrl url);
+            void add_client(const QUrl& url);
 
         signals:
             void signal_list_received(const QString& id, const QString& display_name, const QString& thumbnail);
