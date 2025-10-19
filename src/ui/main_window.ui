@@ -43,80 +43,43 @@
      <number>5</number>
     </property>
     <item row="0" column="0">
-     <widget class="QTabWidget" name="tabs">
-      <property name="currentIndex">
-       <number>0</number>
+     <widget class="QListView" name="vm_list_view">
+      <property name="frameShape">
+       <enum>QFrame::Shape::NoFrame</enum>
       </property>
-      <property name="tabsClosable">
+      <property name="tabKeyNavigation">
        <bool>true</bool>
       </property>
-      <property name="movable">
-       <bool>true</bool>
-      </property>
-      <property name="tabBarAutoHide">
+      <property name="showDropIndicator" stdset="0">
        <bool>false</bool>
       </property>
-      <widget class="QWidget" name="vm_list_tab">
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <attribute name="icon">
-        <iconset theme="accessories-dictionary"/>
-       </attribute>
-       <attribute name="title">
-        <string>Available Virtual Machines</string>
-       </attribute>
-       <layout class="QGridLayout" name="vm_list_tab_grid_layout">
-        <item row="0" column="0">
-         <widget class="QListView" name="vm_list_view">
-          <property name="frameShape">
-           <enum>QFrame::Shape::NoFrame</enum>
-          </property>
-          <property name="tabKeyNavigation">
-           <bool>true</bool>
-          </property>
-          <property name="showDropIndicator" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="alternatingRowColors">
-           <bool>false</bool>
-          </property>
-          <property name="verticalScrollMode">
-           <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
-          </property>
-          <property name="horizontalScrollMode">
-           <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
-          </property>
-          <property name="movement">
-           <enum>QListView::Movement::Free</enum>
-          </property>
-          <property name="flow">
-           <enum>QListView::Flow::LeftToRight</enum>
-          </property>
-          <property name="resizeMode">
-           <enum>QListView::ResizeMode::Adjust</enum>
-          </property>
-          <property name="spacing">
-           <number>50</number>
-          </property>
-          <property name="viewMode">
-           <enum>QListView::ViewMode::IconMode</enum>
-          </property>
-          <property name="uniformItemSizes">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="example_vm_tab">
-       <attribute name="icon">
-        <iconset theme="QIcon::ThemeIcon::Computer"/>
-       </attribute>
-       <attribute name="title">
-        <string>VM 1</string>
-       </attribute>
-      </widget>
+      <property name="alternatingRowColors">
+       <bool>false</bool>
+      </property>
+      <property name="verticalScrollMode">
+       <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+      </property>
+      <property name="horizontalScrollMode">
+       <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+      </property>
+      <property name="movement">
+       <enum>QListView::Movement::Free</enum>
+      </property>
+      <property name="flow">
+       <enum>QListView::Flow::LeftToRight</enum>
+      </property>
+      <property name="resizeMode">
+       <enum>QListView::ResizeMode::Adjust</enum>
+      </property>
+      <property name="spacing">
+       <number>50</number>
+      </property>
+      <property name="viewMode">
+       <enum>QListView::ViewMode::IconMode</enum>
+      </property>
+      <property name="uniformItemSizes">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
    </layout>

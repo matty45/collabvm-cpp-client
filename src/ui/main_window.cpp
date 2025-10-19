@@ -11,8 +11,6 @@ main_window::main_window(QWidget* parent)
 
 	ui->setupUi(this);
 
-	connect(ui->tabs, &QTabWidget::tabCloseRequested, ui->tabs, &QTabWidget::removeTab);
-
 	connect(ui->action_open_settings, &QAction::triggered, this, [this] {
 		settings_dialog* settings = new settings_dialog(this);
 		settings->setAttribute(Qt::WA_DeleteOnClose);
