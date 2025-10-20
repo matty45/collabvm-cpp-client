@@ -94,6 +94,7 @@ namespace cvm::ws
 		socket->open(request);
 
 		m_clients.append(socket);
+
 	}
 
 	void client_manager::connect_to_servers()
@@ -156,6 +157,14 @@ namespace cvm::ws
 			return;
 		}
 
+		if (decoded_message[0] == "adduser")
+		{
+			for (int i = 1; i + 2 < decoded_message.size(); i += 3) {
+				emit signal_adduser_received(decoded_message[i], static_cast<user::rank>(decoded_message[i + 1].toInt()), p_client->requestUrl());
+			}
+
+			return;
+		}
 
 		//TODO: might be possible to skip sending the opcode through these handlers as its redundant?
 		if (decoded_message[0] == "list")
@@ -169,6 +178,12 @@ namespace cvm::ws
 			if (!m_persistence_mode) // Dont disconnect servers after listing them in the vm list if persistence mode is enabled!
 				p_client->close();
 
+			return;
+		}
+
+		if (decoded_message[0] == "nop")
+		{
+			p_client->sendTextMessage("3.nop;");
 			return;
 		}
 

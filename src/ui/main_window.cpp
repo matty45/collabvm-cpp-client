@@ -37,6 +37,7 @@ main_window::main_window(QWidget* parent)
 	ui->vm_list_view->setModel(vm_list);
 
 	connect(c_manager, &cvm::ws::client_manager::signal_list_received, vm_list, &cvm::models::vm_list::append);
+	connect(c_manager, &cvm::ws::client_manager::signal_adduser_received,vm_list, &cvm::models::vm_list::append_user);
 
 	// Open settings logic
 	connect(ui->action_open_settings, &QAction::triggered, this, [this] {
@@ -80,7 +81,7 @@ void main_window::on_vm_activated(const QModelIndex& index) {
     cvm::models::vm_list* model = qobject_cast<cvm::models::vm_list*>(ui->vm_list_view->model());
     if (!model) return;
 
-    cvm::vm vm_data = model->vm(index);
+    cvm::vm vm_data = model->vm_at_index(index);
 
     // Check if window already exists  
     if (m_open_vm_windows.contains(vm_data.m_id)) {

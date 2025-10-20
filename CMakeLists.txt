@@ -26,10 +26,10 @@ set(SOURCE_FILES
     src/cvm/ws/ws_manager.cpp
     src/cvm/cvm.cpp
     src/cvm/models/vm_list.cpp
+    src/cvm/models/delegates/vm_delegate.cpp
     src/ui/settings/settings_dialog.cpp
     src/settings/settings_manager.cpp
     src/ui/vms/vm_window.cpp
-    src/cvm/models/delegates/vm_delegate.cpp
 )
 
 add_project_meta(META_FILES_TO_INCLUDE)

@@ -40,6 +40,8 @@ namespace cvm
 
 		QUrl m_server; // Websocket server url that was used to connect to this vm.
 
+		QList<user> m_users;
+
 		vm(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server);
 	};
 }

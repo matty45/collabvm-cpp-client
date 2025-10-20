@@ -12,7 +12,7 @@ settings_manager::~settings_manager()
 
 bool settings_manager::get_persistence_mode() const
 {
-	return settings.value("Servers/persistence_mode", false).toBool();
+	return settings.value("Servers/persistence_mode", true).toBool();
 }
 
 void settings_manager::save_persistence_mode(const bool& toggle) {
