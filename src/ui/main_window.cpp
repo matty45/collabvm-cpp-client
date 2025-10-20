@@ -12,6 +12,25 @@ main_window::main_window(QWidget* parent)
 
 	ui->setupUi(this);
 
+	// Create settings manager
+	settings_manager* s_manager = new settings_manager(this);
+
+	// Create websocket client manager
+	cvm::ws::client_manager* c_manager = new cvm::ws::client_manager(this);
+
+	//Load persistence mode setting
+	c_manager->m_persistence_mode = s_manager->get_persistence_mode();
+
+	// Load list of servers from settings
+	c_manager->m_servers = s_manager->get_servers();
+
+	// Setup VM list.
+	cvm::models::vm_list* vm_list = new cvm::models::vm_list(this);
+
+	ui->vm_list_view->setModel(vm_list);
+
+	connect(c_manager, &cvm::ws::client_manager::signal_list_received, vm_list, &cvm::models::vm_list::append);
+
 	// Open settings logic
 	connect(ui->action_open_settings, &QAction::triggered, this, [this] {
 		settings_dialog* settings = new settings_dialog(this);
@@ -19,25 +38,22 @@ main_window::main_window(QWidget* parent)
 		settings->exec();
 		});
 
-	// Create settings manager
-	settings_manager* s_manager = new settings_manager(this);
-
-	// Create websocket client manager
-	cvm::ws::client_manager* c_manager = new cvm::ws::client_manager(this);
-
-	// Load list of servers from settings and connect to them.
-	QStringList servers = s_manager->get_servers();
-	for (const QString& url : servers) {
-		c_manager->add_client(QUrl(url));
-		c_manager->connect_client(QUrl(url));
-	}
-
-	// Setup VM list.
-	cvm::models::vm_list* vm_list = new cvm::models::vm_list(this);
-	connect(c_manager, &cvm::ws::client_manager::signal_list_received, vm_list, &cvm::models::vm_list::append);
-	ui->vm_list_view->setModel(vm_list);
-
 	connect(ui->vm_list_view, &QAbstractItemView::doubleClicked, this, &main_window::on_vm_double_clicked);
+
+	//Refresh button logic
+	connect(c_manager, &cvm::ws::client_manager::all_clients_cleared, c_manager, &cvm::ws::client_manager::connect_to_servers);
+	connect(ui->action_refresh_all_servers, &QAction::triggered, this, [this, vm_list, c_manager] {
+
+		vm_list->clear();
+
+		if (c_manager->m_persistence_mode)
+			c_manager->broadcast("4.list;");
+		else
+			c_manager->clear_all_clients();
+		
+		});
+
+	c_manager->connect_to_servers();
 
 }
 

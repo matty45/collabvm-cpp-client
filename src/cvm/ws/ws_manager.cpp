@@ -5,26 +5,39 @@
 namespace cvm::ws
 {
 	client_manager::client_manager(QObject* parent) :
-		QObject(parent)
+		QObject(parent), m_persistence_mode(false)
 	{
+	}
+
+	void client_manager::clear_all_clients()
+	{
+		if (m_clients.isEmpty()) {
+			emit all_clients_cleared();
+			return;
+		}
+
+		m_pending_disconnections = m_clients.size();
+
+		// Close all clients - this triggers disconnected() signal for each  
+		for (QWebSocket* socket : m_clients) {
+			if (socket) {
+				socket->close();
+			}
+		}
 	}
 
 	client_manager::~client_manager()
 	{
-
 		qDebug() << "Shutting down client manager!";
 
-		for (QWebSocket* socket : m_clients)
-			socket->close();
-
-		qDeleteAll(m_clients.begin(), m_clients.end());
-
+		clear_all_clients();
 	}
 
 	QWebSocket* client_manager::find_client_by_url(const QUrl& url) const
 	{
-		if (m_clients.contains(url))
-			return m_clients.value(url);
+		for (QWebSocket* client : m_clients)
+			if (client->requestUrl() == url)
+				return client;
 
 		return nullptr;
 	}
@@ -66,25 +79,6 @@ namespace cvm::ws
 		connect(socket, &QWebSocket::errorOccurred, this, &client_manager::on_error_received);
 		connect(socket, QOverload<const QList<QSslError>&>::of(&QWebSocket::sslErrors), this, &client_manager::on_ssl_errors);
 
-		m_clients.insert(url, socket);
-	}
-
-
-	void client_manager::connect_client(const QUrl& url) const
-	{
-		QWebSocket* socket = find_client_by_url(url);
-
-		if (!socket)
-		{
-			QMessageBox::critical(
-				nullptr,
-				"Websocket client connection error",
-				QString("%1 does not exist.").arg(url.url()),
-				QMessageBox::Ok
-			);
-			return;
-		}
-
 		QNetworkRequest request;
 
 		request.setUrl(url);
@@ -98,6 +92,15 @@ namespace cvm::ws
 
 
 		socket->open(request);
+
+		m_clients.append(socket);
+	}
+
+	void client_manager::connect_to_servers()
+	{
+		for (const QString& url : m_servers) {
+			add_client(QUrl(url));
+		}
 	}
 
 	//Make all the clients send a specific message.
@@ -121,10 +124,22 @@ namespace cvm::ws
 		p_client->sendTextMessage("4.list;");
 	}
 
-	void client_manager::on_disconnected() const
+	void client_manager::on_disconnected()
 	{
 		QWebSocket* p_client = qobject_cast<QWebSocket*>(sender());
 		qDebug() << "WS: Disconnected from server: " << p_client->requestUrl();
+
+		m_clients.removeAll(p_client);
+		p_client->deleteLater();
+
+		// Track when all clients are disconnected  
+		if (m_pending_disconnections > 0) {
+			m_pending_disconnections--;
+			if (m_pending_disconnections == 0 && m_clients.isEmpty()) {
+				emit all_clients_cleared();
+			}
+		}
+
 	}
 
 	void client_manager::on_text_message_received(const QString& message)
@@ -150,7 +165,10 @@ namespace cvm::ws
 			for (int i = 1; i + 2 < decoded_message.size(); i += 3) {
 				emit signal_list_received(decoded_message[i], decoded_message[i + 1], decoded_message[i + 2], p_client->requestUrl());
 			}
-			p_client->close();
+
+			if (!m_persistence_mode) // Dont disconnect servers after listing them in the vm list if persistence mode is enabled!
+				p_client->close();
+
 			return;
 		}
 
