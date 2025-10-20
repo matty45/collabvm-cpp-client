@@ -39,13 +39,6 @@ main_window::main_window(QWidget* parent)
 
 	connect(ui->vm_list_view, &QAbstractItemView::doubleClicked, this, &main_window::on_vm_double_clicked);
 
-	//Refresh button logic
-	connect(ui->action_refresh_all_servers, &QAction::triggered, this, [this, vm_list, c_manager] {
-		// This will only work on servers that are still connected!
-		vm_list->clear();
-		c_manager->broadcast("4.list;");
-		});
-
 }
 
 void main_window::on_vm_double_clicked(const QModelIndex& index) {
