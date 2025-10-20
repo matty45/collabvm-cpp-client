@@ -18,7 +18,7 @@ namespace cvm::ws
             void broadcast(const QString& msg) const;
 
         signals:
-            void signal_list_received(const QString& id, const QString& display_name, const QString& thumbnail);
+            void signal_list_received(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server);
             void closed();
 
         private Q_SLOTS:

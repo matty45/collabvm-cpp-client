@@ -51,13 +51,13 @@ namespace cvm::models
 		return m_vm_list.at(index.row());
 	}
 
-	void vm_list::append(const QString& id, const QString& display_name, const QString& thumbnail)
+	void vm_list::append(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server)
 	{
 		int row = 0;
 		while (row < m_vm_list.count() && id > m_vm_list.at(row).m_id)
 			++row;
 		beginInsertRows(QModelIndex(), row, row);
-		m_vm_list.insert(row, { id, display_name, thumbnail });
+		m_vm_list.insert(row, { id, display_name, thumbnail, server });
 		endInsertRows();
 	}
 

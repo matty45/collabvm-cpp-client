@@ -2,6 +2,7 @@
 #pragma once
 #include <qpixmap.h>
 #include <qstring.h>
+#include <QUrl>
 
 namespace cvm
 {
@@ -30,12 +31,15 @@ namespace cvm
 
 	struct vm
 	{
+
 		QString m_id;
 
 		QString m_display_name; // Name of the VM, can contain HTML
 
 		QPixmap m_thumbnail; // Image is decoded from base64.
 
-		vm(const QString& id, const QString& display_name, const QString& thumbnail);
+		QUrl m_server; // Websocket server url that was used to connect to this vm.
+
+		vm(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server);
 	};
 }

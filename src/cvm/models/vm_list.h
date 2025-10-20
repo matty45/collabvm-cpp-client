@@ -19,7 +19,7 @@ namespace cvm::models
 
         vm vm(const QModelIndex& index) const;
 
-        Q_INVOKABLE void append(const QString& id, const QString& display_name, const QString& thumbnail);
+        Q_INVOKABLE void append(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server);
         Q_INVOKABLE void remove(int row);
         Q_INVOKABLE void clear();
 

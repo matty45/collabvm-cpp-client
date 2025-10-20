@@ -9,7 +9,7 @@ namespace cvm
 		m_username = username;
 	}
 
-	vm::vm(const QString& id, const QString& display_name, const QString& thumbnail)
+	vm::vm(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server)
 	{
 		m_id = id;
 		m_display_name = display_name;
@@ -19,5 +19,8 @@ namespace cvm
 		Q_ASSERT(result.decodingStatus == QByteArray::Base64DecodingStatus::Ok);
 
 		m_thumbnail.loadFromData(result.decoded);
+
+		m_server = server;
+
 	}
 }

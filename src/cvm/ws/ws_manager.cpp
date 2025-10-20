@@ -146,7 +146,7 @@ namespace cvm::ws
 		if (decoded_message[0] == "list")
 		{
 			for (int i = 1; i + 2 < decoded_message.size(); i += 3) {
-				emit signal_list_received(decoded_message[i], decoded_message[i + 1], decoded_message[i + 2]);
+				emit signal_list_received(decoded_message[i], decoded_message[i + 1], decoded_message[i + 2], p_client->requestUrl());
 			}
 			return;
 		}
