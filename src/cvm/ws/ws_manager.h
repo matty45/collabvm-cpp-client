@@ -15,6 +15,7 @@ namespace cvm::ws
             QWebSocket* find_client_by_url(const QUrl& url) const;
             void add_client(const QUrl& url);
             void connect_client(const QUrl& url) const;
+            void broadcast(const QString& msg) const;
 
         signals:
             void signal_list_received(const QString& id, const QString& display_name, const QString& thumbnail);

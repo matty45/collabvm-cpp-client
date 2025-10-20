@@ -12,6 +12,7 @@ main_window::main_window(QWidget* parent)
 
 	ui->setupUi(this);
 
+	// Open settings logic
 	connect(ui->action_open_settings, &QAction::triggered, this, [this] {
 		settings_dialog* settings = new settings_dialog(this);
 		settings->setAttribute(Qt::WA_DeleteOnClose);
@@ -37,6 +38,13 @@ main_window::main_window(QWidget* parent)
 	ui->vm_list_view->setModel(vm_list);
 
 	connect(ui->vm_list_view, &QAbstractItemView::doubleClicked, this, &main_window::on_vm_double_clicked);
+
+	//Refresh button logic
+	connect(ui->action_refresh_all_servers, &QAction::triggered, this, [this, vm_list, c_manager] {
+		// This will only work on servers that are still connected!
+		vm_list->clear();
+		c_manager->broadcast("4.list;");
+		});
 
 }
 

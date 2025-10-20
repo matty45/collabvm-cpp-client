@@ -100,6 +100,15 @@ namespace cvm::ws
 		socket->open(request);
 	}
 
+	//Make all the clients send a specific message.
+	void client_manager::broadcast(const QString& msg) const
+	{
+		for (QWebSocket* socket : m_clients)
+			socket->sendTextMessage(msg);
+
+		qDebug() << "WS: Broadcasted:" << msg;
+	}
+
 	void client_manager::on_connected()
 	{
 		QWebSocket* p_client = qobject_cast<QWebSocket*>(sender());
@@ -107,6 +116,7 @@ namespace cvm::ws
 		qDebug() << "WS: WebSocket connected";
 		connect(p_client, &QWebSocket::textMessageReceived, this, &client_manager::on_text_message_received);
 
+		//TODO: Should probably request the list elsewhere.
 		// Requesting list
 		p_client->sendTextMessage("4.list;");
 	}
