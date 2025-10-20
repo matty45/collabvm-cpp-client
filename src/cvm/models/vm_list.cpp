@@ -70,6 +70,7 @@ namespace cvm::models
 				for (int i = 0; i < veem.m_users.count(); ++i)
 					if (veem.m_users.at(i).m_username == username)
 					{
+						// Update existing user.
 						veem.m_users[i] = { username,rank };
 						emit dataChanged(index(i), index(i));
 						return;
