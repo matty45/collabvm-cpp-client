@@ -29,6 +29,7 @@ set(SOURCE_FILES
     src/ui/settings/settings_dialog.cpp
     src/settings/settings_manager.cpp
     src/ui/vms/vm_window.cpp
+    src/cvm/models/delegates/vm_delegate.cpp
 )
 
 add_project_meta(META_FILES_TO_INCLUDE)

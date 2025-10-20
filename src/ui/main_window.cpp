@@ -2,6 +2,7 @@
 
 #include "ui_main_window.h"
 #include "settings/settings_dialog.h"
+#include "src/cvm/models/delegates/vm_delegate.h"
 #include "src/cvm/ws/ws_manager.h"
 #include "src/settings/settings_manager.h"
 #include "vms/vm_window.h"
@@ -27,6 +28,9 @@ main_window::main_window(QWidget* parent)
 	// Setup VM list.
 	cvm::models::vm_list* vm_list = new cvm::models::vm_list(this);
 
+	cvm::delegates::vm_delegate* delegate = new cvm::delegates::vm_delegate(ui->vm_list_view);
+	ui->vm_list_view->setItemDelegate(delegate);
+
 	ui->vm_list_view->setModel(vm_list);
 
 	connect(c_manager, &cvm::ws::client_manager::signal_list_received, vm_list, &cvm::models::vm_list::append);
@@ -38,7 +42,7 @@ main_window::main_window(QWidget* parent)
 		settings->exec();
 		});
 
-	connect(ui->vm_list_view, &QAbstractItemView::doubleClicked, this, &main_window::on_vm_double_clicked);
+	connect(ui->vm_list_view, &QAbstractItemView::activated, this, &main_window::on_vm_activated);
 
 	//Refresh button logic
 	connect(c_manager, &cvm::ws::client_manager::all_clients_cleared, c_manager, &cvm::ws::client_manager::connect_to_servers);
@@ -57,7 +61,7 @@ main_window::main_window(QWidget* parent)
 
 }
 
-void main_window::on_vm_double_clicked(const QModelIndex& index) {
+void main_window::on_vm_activated(const QModelIndex& index) {
     cvm::models::vm_list* model = qobject_cast<cvm::models::vm_list*>(ui->vm_list_view->model());
     if (!model) return;
 
@@ -73,7 +77,7 @@ void main_window::on_vm_double_clicked(const QModelIndex& index) {
     }
 
     // Create new window  
-    vm_window* vm_w = new vm_window(vm_data, this);
+    vm_window* vm_w = new vm_window(vm_data);
     m_open_vm_windows[vm_data.m_id] = vm_w;
 
     // Clean up when window closes  
@@ -82,6 +86,7 @@ void main_window::on_vm_double_clicked(const QModelIndex& index) {
         });
 
     vm_w->show();
+	vm_w->setAttribute(Qt::WA_DeleteOnClose);
 	vm_w->setWindowTitle(vm_data.m_display_name);
 }
 

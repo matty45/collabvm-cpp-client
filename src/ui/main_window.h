@@ -17,7 +17,7 @@ public:
     QHash<QString, QWidget*> m_open_vm_windows;
 
 private Q_SLOTS:
-    void on_vm_double_clicked(const QModelIndex& index);
+    void on_vm_activated(const QModelIndex& index);
 
 private:
     QScopedPointer<Ui::main_window> ui;

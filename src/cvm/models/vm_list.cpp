@@ -34,11 +34,11 @@ namespace cvm::models
 			return vm.m_display_name;
 		}
 
-		case Qt::FontRole:
+		case Qt::ToolTipRole:
 		{
-			QFont font;
-			font.setBold(true);
-			return font;
+			cvm::vm vm = m_vm_list.at(index.row());
+
+			return QString("Server: %1").arg(vm.m_server.url());
 		}
 
 		}
