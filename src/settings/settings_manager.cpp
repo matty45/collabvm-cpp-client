@@ -10,6 +10,16 @@ settings_manager::~settings_manager()
 {
 }
 
+bool settings_manager::get_persistence_mode() const
+{
+	return settings.value("Servers/persistence_mode", false).toBool();
+}
+
+void settings_manager::save_persistence_mode(const bool& toggle) {
+	settings.setValue("Servers/persistence_mode", toggle);
+	emit server_persistence_mode_changed(toggle);  // Notify all listeners  
+}
+
 QStringList settings_manager::get_servers() const
 {
 	QStringList defaults = {
