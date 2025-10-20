@@ -1,11 +1,14 @@
 #include "main_window.h"
 
+#include <QMessageBox>
+
 #include "ui_main_window.h"
 #include "settings/settings_dialog.h"
 #include "src/cvm/models/delegates/vm_delegate.h"
 #include "src/cvm/ws/ws_manager.h"
 #include "src/settings/settings_manager.h"
 #include "vms/vm_window.h"
+
 
 main_window::main_window(QWidget* parent)
 	: QMainWindow(parent), ui(new Ui::main_window)
@@ -14,10 +17,10 @@ main_window::main_window(QWidget* parent)
 	ui->setupUi(this);
 
 	// Create settings manager
-	settings_manager* s_manager = new settings_manager(this);
+	s_manager = new settings_manager(this);
 
 	// Create websocket client manager
-	cvm::ws::client_manager* c_manager = new cvm::ws::client_manager(this);
+	c_manager = new cvm::ws::client_manager(this);
 
 	//Load persistence mode setting
 	c_manager->m_persistence_mode = s_manager->get_persistence_mode();
@@ -26,7 +29,7 @@ main_window::main_window(QWidget* parent)
 	c_manager->m_servers = s_manager->get_servers();
 
 	// Setup VM list.
-	cvm::models::vm_list* vm_list = new cvm::models::vm_list(this);
+	vm_list = new cvm::models::vm_list(this);
 
 	cvm::delegates::vm_delegate* delegate = new cvm::delegates::vm_delegate(ui->vm_list_view);
 	ui->vm_list_view->setItemDelegate(delegate);
@@ -46,7 +49,19 @@ main_window::main_window(QWidget* parent)
 
 	//Refresh button logic
 	connect(c_manager, &cvm::ws::client_manager::all_clients_cleared, c_manager, &cvm::ws::client_manager::connect_to_servers);
-	connect(ui->action_refresh_all_servers, &QAction::triggered, this, [this, vm_list, c_manager] {
+	connect(ui->action_refresh_all_servers, &QAction::triggered, this, [this] {
+
+		if (!m_open_vm_windows.empty()) // https://github.com/matty45/collabvm-qt-client/issues/15
+		{
+			QMessageBox::warning(
+				nullptr,
+				"Cannot refresh!",
+				"Please close all running vm windows before refreshing the vm list.",
+				QMessageBox::Ok
+			);
+
+			return;
+		}
 
 		vm_list->clear();
 
@@ -75,6 +90,9 @@ void main_window::on_vm_activated(const QModelIndex& index) {
             return;
         }
     }
+
+	if (!c_manager->m_persistence_mode)
+		c_manager->add_client(vm_data.m_server);
 
     // Create new window  
     vm_window* vm_w = new vm_window(vm_data);
