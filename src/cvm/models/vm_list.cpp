@@ -55,6 +55,9 @@ namespace cvm::models
 
 	void vm_list::append_user(const QString& username, const user::rank& rank, const QUrl& server)
 	{
+
+		//Ugly code!
+
 		bool found_vm = false;
 		// Find vm 
 		for (int i = 0; i < m_vm_list.count(); ++i)
@@ -63,7 +66,16 @@ namespace cvm::models
 			{
 				vm veem = m_vm_list[i];
 
-				// Update existing entry  
+				//Check if user is already in the list
+				for (int i = 0; i < veem.m_users.count(); ++i)
+					if (veem.m_users.at(i).m_username == username)
+					{
+						veem.m_users[i] = { username,rank };
+						emit dataChanged(index(i), index(i));
+						return;
+					}
+				
+
 				veem.m_users.append({ username, rank });
 				emit dataChanged(index(i), index(i));
 				found_vm = true;
