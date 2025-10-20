@@ -53,6 +53,19 @@ namespace cvm::models
 
 	void vm_list::append(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server)
 	{
+
+		// Check for duplicates and update if found  
+		for (int i = 0; i < m_vm_list.count(); ++i)
+		{
+			if (m_vm_list.at(i).m_id == id && m_vm_list.at(i).m_server == server)
+			{
+				// Update existing entry  
+				m_vm_list[i] = { id, display_name, thumbnail,server };
+				emit dataChanged(index(i), index(i));
+				return;
+			}
+		}
+
 		int row = 0;
 		while (row < m_vm_list.count() && id > m_vm_list.at(row).m_id)
 			++row;

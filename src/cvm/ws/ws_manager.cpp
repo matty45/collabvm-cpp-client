@@ -145,9 +145,12 @@ namespace cvm::ws
 		//TODO: might be possible to skip sending the opcode through these handlers as its redundant?
 		if (decoded_message[0] == "list")
 		{
+			// Add to list then disconnect!
+
 			for (int i = 1; i + 2 < decoded_message.size(); i += 3) {
 				emit signal_list_received(decoded_message[i], decoded_message[i + 1], decoded_message[i + 2], p_client->requestUrl());
 			}
+			p_client->close();
 			return;
 		}
 
