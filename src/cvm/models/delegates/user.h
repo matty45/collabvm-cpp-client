@@ -4,12 +4,12 @@
 
 namespace cvm::delegates
 {
-    class vm_delegate : public QStyledItemDelegate
+    class user : public QStyledItemDelegate
     {
         Q_OBJECT
 
     public:
-        explicit vm_delegate(QObject* parent = nullptr);
+        explicit user(QObject* parent = nullptr);
 
         void paint(QPainter* painter,
             const QStyleOptionViewItem& option,
@@ -17,5 +17,9 @@ namespace cvm::delegates
 
         QSize sizeHint(const QStyleOptionViewItem& option,
             const QModelIndex& index) const override;
+
+    private:
+        static QString get_rank_emoji(int rank);
+        static QString get_country_emoji(const QString& countryCode);
     };
 }

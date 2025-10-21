@@ -12,6 +12,12 @@ namespace cvm::models
         Q_OBJECT
 
     public:
+
+        enum user_roles : quint16 {
+            rank_role = Qt::UserRole + 1,
+            country_role = Qt::UserRole + 2
+        };
+
         explicit user_list(QObject* parent = nullptr);
 
         int rowCount(const QModelIndex& parent = QModelIndex()) const override;
@@ -25,7 +31,7 @@ namespace cvm::models
         Q_INVOKABLE void clear();
 
     private:
-        QList<cvm::user> m_user_list;
+        QList<user> m_user_list;
     };
 
 }

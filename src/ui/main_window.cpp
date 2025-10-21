@@ -1,13 +1,11 @@
 #include "main_window.h"
 
 #include <QMessageBox>
-#include <QSortFilterProxyModel>
 
 #include "ui_main_window.h"
 #include "settings/settings_dialog.h"
 #include "src/cvm/models/user_list.h"
-#include "src/cvm/models/delegates/vm_delegate.h"
-#include "src/cvm/models/proxies/user_filter_proxy.h"
+#include "src/cvm/models/delegates/vm.h"
 #include "src/cvm/ws/ws_manager.h"
 #include "src/settings/settings_manager.h"
 #include "vms/vm_window.h"
@@ -36,7 +34,7 @@ main_window::main_window(QWidget* parent)
 	// Setup user list.
 	m_user_list = new cvm::models::user_list(this);
 
-	cvm::delegates::vm_delegate* delegate = new cvm::delegates::vm_delegate(m_ui->vm_list_view);
+	cvm::delegates::vm* delegate = new cvm::delegates::vm(m_ui->vm_list_view);
 	m_ui->vm_list_view->setItemDelegate(delegate);
 
 	m_ui->vm_list_view->setModel(m_vm_list);
@@ -71,12 +69,14 @@ main_window::main_window(QWidget* parent)
 		}
 
 		m_vm_list->clear();
-		m_user_list->clear();
 
 		if (m_c_manager->m_persistence_mode)
 			m_c_manager->broadcast("4.list;");
 		else
+		{
+			m_user_list->clear();
 			m_c_manager->clear_all_clients();
+		}
 		
 		});
 

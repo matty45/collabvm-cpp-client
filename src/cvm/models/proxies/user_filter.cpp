@@ -1,20 +1,20 @@
-#include "user_filter_proxy.h"
+#include "user_filter.h"
 
 #include "src/cvm/models/user_list.h"
 
 namespace cvm::models::proxies
 {
-    user_filter_proxy::user_filter_proxy(QObject* parent)
+    user_filter::user_filter(QObject* parent)
     {
     }
 
-    void user_filter_proxy::set_filter_server(const QUrl& server)
+    void user_filter::set_filter_server(const QUrl& server)
     {
         m_filter_server = server;
         invalidate(); // Trigger re-filtering  
     }
 
-    bool user_filter_proxy::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
+    bool user_filter::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
     {
         if (m_filter_server.isEmpty())
             return true; // No filter set, accept all rows  

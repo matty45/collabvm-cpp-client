@@ -20,14 +20,39 @@ namespace cvm::models
 		Q_ASSERT(index.isValid());
 		Q_ASSERT(index.row() <= m_user_list.size());
 
-
 		switch (role)
 		{
+
+		case rank_role:
+		{
+			user u = m_user_list.at(index.row());
+			return u.m_rank;
+		}
+
+
+		case country_role:
+		{
+			user u = m_user_list.at(index.row());
+			return u.m_country_code;
+		}
+
 
 		case Qt::DisplayRole:
 		{
 			user u = m_user_list.at(index.row());
 			return u.m_username;
+		}
+
+		case Qt::ToolTipRole:
+		{
+			user u = m_user_list.at(index.row());
+
+			return QString("Rank: %1").arg(u.m_rank);
+		}
+
+		case Qt::TextAlignmentRole:
+		{
+			return Qt::AlignCenter;
 		}
 
 		}

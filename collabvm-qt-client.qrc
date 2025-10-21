@@ -1,5 +1,1 @@
-<RCC>
-  <qresource prefix="Images">
-    <file alias="CollabVM Logo">res/icon.png</file>
-  </qresource>
-</RCC>
+<RCC/>

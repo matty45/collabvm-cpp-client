@@ -1,4 +1,4 @@
-#include "vm_delegate.h"  
+#include "vm.h"  
 #include <QPainter>  
 #include <QTextDocument>  
 #include <QAbstractTextDocumentLayout>  
@@ -6,12 +6,12 @@
 
 namespace cvm::delegates
 {
-    vm_delegate::vm_delegate(QObject* parent)
+    vm::vm(QObject* parent)
         : QStyledItemDelegate(parent)
     {
     }
 
-    void vm_delegate::paint(QPainter* painter,
+    void vm::paint(QPainter* painter,
         const QStyleOptionViewItem& option,
         const QModelIndex& index) const
     {
@@ -78,7 +78,7 @@ namespace cvm::delegates
         painter->restore();
     }
 
-    QSize vm_delegate::sizeHint(const QStyleOptionViewItem& option,
+    QSize vm::sizeHint(const QStyleOptionViewItem& option,
         const QModelIndex& index) const
     {
         // Since uniformItemSizes is true, we need to return a consistent size  

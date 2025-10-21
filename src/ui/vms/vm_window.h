@@ -2,8 +2,7 @@
 #include <QScopedPointer>
 #include <QDialog>
 
-#include "src/cvm/models/proxies/user_filter_proxy.h"
-#include "src/ui/main_window.h"
+#include "src/cvm/models/proxies/user_filter.h"
 
 namespace Ui
 {
@@ -17,7 +16,7 @@ public:
     explicit vm_window(const cvm::vm& vm, QAbstractListModel* user_list_model, QWidget* parent = nullptr);
     virtual ~vm_window();
 
-    cvm::models::proxies::user_filter_proxy* m_user_filter_proxy;
+    cvm::models::proxies::user_filter* m_user_filter_proxy;
 
 private:
     QScopedPointer<Ui::vm_window> m_ui;
