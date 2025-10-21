@@ -52,49 +52,6 @@ namespace cvm::models
 		return m_vm_list.at(index.row());
 	}
 
-
-	void vm_list::append_user(const QString& username, const user::rank& rank, const QUrl& server)
-	{
-
-		//Ugly code!
-
-		bool found_vm = false;
-		// Find vm 
-		for (int i = 0; i < m_vm_list.count(); ++i)
-		{
-			if (m_vm_list.at(i).m_server == server)
-			{
-				vm veem = m_vm_list[i];
-
-				//Check if user is already in the list
-				for (int i = 0; i < veem.m_users.count(); ++i)
-					if (veem.m_users.at(i).m_username == username)
-					{
-						// Update existing user.
-						veem.m_users[i] = { username,rank };
-						emit dataChanged(index(i), index(i));
-						return;
-					}
-				
-
-				veem.m_users.append({ username, rank });
-				emit dataChanged(index(i), index(i));
-				found_vm = true;
-			}
-		}
-
-		if (!found_vm)
-		{
-			QMessageBox::critical(
-				nullptr,
-				"VM User Addition Error!",
-				QString("Could not add user to VM as it possibly does not exist. : %2").arg(server.url()),
-				QMessageBox::Ok
-			);
-		}
-
-	}
-
 	void vm_list::append(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server)
 	{
 

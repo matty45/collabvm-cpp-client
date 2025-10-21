@@ -26,7 +26,9 @@ namespace cvm
 
 		QString m_country_code;
 
-		user(const QString& username, const rank& rank);
+		QUrl m_server; // Websocket server url that this user was grabbed from.
+
+		user(const QString& username, const rank& rank, const QUrl& server);
 	};
 
 	struct vm
@@ -39,8 +41,6 @@ namespace cvm
 		QPixmap m_thumbnail; // Image is decoded from base64.
 
 		QUrl m_server; // Websocket server url that was used to connect to this vm.
-
-		QList<user> m_users;
 
 		vm(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server);
 	};

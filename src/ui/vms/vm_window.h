@@ -17,5 +17,5 @@ public:
     virtual ~vm_window();
 
 private:
-    QScopedPointer<Ui::vm_window> ui;
+    QScopedPointer<Ui::vm_window> m_ui;
 };

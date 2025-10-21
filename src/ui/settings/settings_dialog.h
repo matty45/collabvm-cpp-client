@@ -15,5 +15,5 @@ public:
     virtual ~settings_dialog();
 
 private:
-    QScopedPointer<Ui::settings_dialog> ui;
+    QScopedPointer<Ui::settings_dialog> m_ui;
 };

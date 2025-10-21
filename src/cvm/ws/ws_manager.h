@@ -24,6 +24,7 @@ namespace cvm::ws
             void broadcast(const QString& msg) const;
 
         signals:
+            void signal_remuser_received(const QString& username, const QUrl& server);
             void signal_adduser_received(const QString& username, const user::rank& rank, const QUrl& server);
             void signal_list_received(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server);
             void all_clients_cleared();

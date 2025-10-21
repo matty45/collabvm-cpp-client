@@ -20,5 +20,5 @@ signals:
     void server_persistence_mode_changed(const bool& toggle);
 
 private:
-    QSettings settings;
+    QSettings m_settings;
 };

@@ -4,6 +4,7 @@
 
 #include "ui_main_window.h"
 #include "settings/settings_dialog.h"
+#include "src/cvm/models/user_list.h"
 #include "src/cvm/models/delegates/vm_delegate.h"
 #include "src/cvm/ws/ws_manager.h"
 #include "src/settings/settings_manager.h"
@@ -11,46 +12,50 @@
 
 
 main_window::main_window(QWidget* parent)
-	: QMainWindow(parent), ui(new Ui::main_window)
+	: QMainWindow(parent), m_ui(new Ui::main_window)
 {
 
-	ui->setupUi(this);
+	m_ui->setupUi(this);
 
 	// Create settings manager
-	s_manager = new settings_manager(this);
+	m_s_manager = new settings_manager(this);
 
 	// Create websocket client manager
-	c_manager = new cvm::ws::client_manager(this);
+	m_c_manager = new cvm::ws::client_manager(this);
 
 	//Load persistence mode setting
-	c_manager->m_persistence_mode = s_manager->get_persistence_mode();
+	m_c_manager->m_persistence_mode = m_s_manager->get_persistence_mode();
 
 	// Load list of servers from settings
-	c_manager->m_servers = s_manager->get_servers();
+	m_c_manager->m_servers = m_s_manager->get_servers();
 
 	// Setup VM list.
-	vm_list = new cvm::models::vm_list(this);
+	m_vm_list = new cvm::models::vm_list(this);
 
-	cvm::delegates::vm_delegate* delegate = new cvm::delegates::vm_delegate(ui->vm_list_view);
-	ui->vm_list_view->setItemDelegate(delegate);
+	// Setup user list.
+	m_user_list = new cvm::models::user_list(this);
 
-	ui->vm_list_view->setModel(vm_list);
+	cvm::delegates::vm_delegate* delegate = new cvm::delegates::vm_delegate(m_ui->vm_list_view);
+	m_ui->vm_list_view->setItemDelegate(delegate);
 
-	connect(c_manager, &cvm::ws::client_manager::signal_list_received, vm_list, &cvm::models::vm_list::append);
-	connect(c_manager, &cvm::ws::client_manager::signal_adduser_received,vm_list, &cvm::models::vm_list::append_user);
+	m_ui->vm_list_view->setModel(m_vm_list);
+
+	connect(m_c_manager, &cvm::ws::client_manager::signal_list_received, m_vm_list, &cvm::models::vm_list::append);
+	connect(m_c_manager, &cvm::ws::client_manager::signal_adduser_received,m_user_list, &cvm::models::user_list::append);
+	connect(m_c_manager, &cvm::ws::client_manager::signal_remuser_received, m_user_list, &cvm::models::user_list::remove);
 
 	// Open settings logic
-	connect(ui->action_open_settings, &QAction::triggered, this, [this] {
+	connect(m_ui->action_open_settings, &QAction::triggered, this, [this] {
 		settings_dialog* settings = new settings_dialog(this);
 		settings->setAttribute(Qt::WA_DeleteOnClose);
 		settings->exec();
 		});
 
-	connect(ui->vm_list_view, &QAbstractItemView::activated, this, &main_window::on_vm_activated);
+	connect(m_ui->vm_list_view, &QAbstractItemView::activated, this, &main_window::on_vm_activated);
 
 	//Refresh button logic
-	connect(c_manager, &cvm::ws::client_manager::all_clients_cleared, c_manager, &cvm::ws::client_manager::connect_to_servers);
-	connect(ui->action_refresh_all_servers, &QAction::triggered, this, [this] {
+	connect(m_c_manager, &cvm::ws::client_manager::all_clients_cleared, m_c_manager, &cvm::ws::client_manager::connect_to_servers);
+	connect(m_ui->action_refresh_all_servers, &QAction::triggered, this, [this] {
 
 		if (!m_open_vm_windows.empty()) // https://github.com/matty45/collabvm-qt-client/issues/15
 		{
@@ -64,21 +69,21 @@ main_window::main_window(QWidget* parent)
 			return;
 		}
 
-		vm_list->clear();
+		m_vm_list->clear();
 
-		if (c_manager->m_persistence_mode)
-			c_manager->broadcast("4.list;");
+		if (m_c_manager->m_persistence_mode)
+			m_c_manager->broadcast("4.list;");
 		else
-			c_manager->clear_all_clients();
+			m_c_manager->clear_all_clients();
 		
 		});
 
-	c_manager->connect_to_servers();
+	m_c_manager->connect_to_servers();
 
 }
 
 void main_window::on_vm_activated(const QModelIndex& index) {
-    cvm::models::vm_list* model = qobject_cast<cvm::models::vm_list*>(ui->vm_list_view->model());
+    cvm::models::vm_list* model = qobject_cast<cvm::models::vm_list*>(m_ui->vm_list_view->model());
     if (!model) return;
 
     cvm::vm vm_data = model->vm_at_index(index);
@@ -92,8 +97,8 @@ void main_window::on_vm_activated(const QModelIndex& index) {
         }
     }
 
-	if (!c_manager->m_persistence_mode)
-		c_manager->add_client(vm_data.m_server);
+	if (!m_c_manager->m_persistence_mode)
+		m_c_manager->add_client(vm_data.m_server);
 
     // Create new window  
     vm_window* vm_w = new vm_window(vm_data);

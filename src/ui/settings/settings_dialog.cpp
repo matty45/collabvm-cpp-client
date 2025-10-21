@@ -3,10 +3,10 @@
 #include "ui_settings_dialog.h"
 
 settings_dialog::settings_dialog(QWidget* parent)
-    : QDialog(parent), ui(new Ui::settings_dialog)
+    : QDialog(parent), m_ui(new Ui::settings_dialog)
 {
 
-    ui->setupUi(this);
+    m_ui->setupUi(this);
    
 }
 

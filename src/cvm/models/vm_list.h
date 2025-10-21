@@ -19,7 +19,6 @@ namespace cvm::models
 
         vm vm_at_index(const QModelIndex& index) const;
 
-        Q_INVOKABLE void append_user(const QString& username, const user::rank& rank, const QUrl& server);
         Q_INVOKABLE void append(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server);
         Q_INVOKABLE void remove(int row);
         Q_INVOKABLE void clear();

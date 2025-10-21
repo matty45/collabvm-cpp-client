@@ -159,10 +159,17 @@ namespace cvm::ws
 
 		if (decoded_message[0] == "adduser")
 		{
-			for (int i = 1; i + 2 < decoded_message.size(); i += 3) {
+			for (int i = 2; i < decoded_message.size(); i += 2) {
 				emit signal_adduser_received(decoded_message[i], static_cast<user::rank>(decoded_message[i + 1].toInt()), p_client->requestUrl());
 			}
+			return;
+		}
 
+		if (decoded_message[0] == "remuser")
+		{
+			for (int i = 2; i < decoded_message.size(); ++i) {
+				emit signal_remuser_received(decoded_message[i], p_client->requestUrl());
+			}
 			return;
 		}
 

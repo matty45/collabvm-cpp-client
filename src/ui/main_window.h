@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QScopedPointer>
 
+#include "src/cvm/models/user_list.h"
 #include "src/cvm/ws/ws_manager.h"
 #include "src/settings/settings_manager.h"
 
@@ -18,11 +19,13 @@ public:
     explicit main_window(QWidget *parent = nullptr);
     virtual ~main_window();
 
-    settings_manager* s_manager;
+    settings_manager* m_s_manager;
 
-    cvm::ws::client_manager* c_manager;
+    cvm::ws::client_manager* m_c_manager;
 
-    cvm::models::vm_list* vm_list;
+    cvm::models::vm_list* m_vm_list;
+
+    cvm::models::user_list* m_user_list;
 
     QHash<QString, QWidget*> m_open_vm_windows;
 
@@ -30,5 +33,5 @@ private Q_SLOTS:
     void on_vm_activated(const QModelIndex& index);
 
 private:
-    QScopedPointer<Ui::main_window> ui;
+    QScopedPointer<Ui::main_window> m_ui;
 };
