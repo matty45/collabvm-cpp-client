@@ -4,6 +4,7 @@
 
 #include "ui_main_window.h"
 #include "settings/settings_dialog.h"
+#include "src/cvm/models/chat_message_list.h"
 #include "src/cvm/models/user_list.h"
 #include "src/cvm/models/delegates/vm.h"
 #include "src/cvm/ws/ws_manager.h"
@@ -34,6 +35,9 @@ main_window::main_window(QWidget* parent)
 	// Setup user list.
 	m_user_list = new cvm::models::user_list(this);
 
+	// Setup chat message list.
+	m_chat_message_list = new cvm::models::chat_message_list(this);
+
 	cvm::delegates::vm* delegate = new cvm::delegates::vm(m_ui->vm_list_view);
 	m_ui->vm_list_view->setItemDelegate(delegate);
 
@@ -42,6 +46,7 @@ main_window::main_window(QWidget* parent)
 	// WS command handlers
 	connect(m_c_manager, &cvm::ws::client_manager::signal_list_received, m_vm_list, &cvm::models::vm_list::append);
 	connect(m_c_manager, &cvm::ws::client_manager::signal_add_user_received,m_user_list, &cvm::models::user_list::append);
+	connect(m_c_manager, &cvm::ws::client_manager::signal_chat_message_received, m_chat_message_list, &cvm::models::chat_message_list::append);
 	connect(m_c_manager, &cvm::ws::client_manager::signal_remove_user_received, m_user_list, &cvm::models::user_list::remove);
 	connect(m_c_manager, &cvm::ws::client_manager::signal_rename_user_received, m_user_list, &cvm::models::user_list::rename);
 	connect(m_c_manager, &cvm::ws::client_manager::signal_add_flag_received, m_user_list, &cvm::models::user_list::set_country);

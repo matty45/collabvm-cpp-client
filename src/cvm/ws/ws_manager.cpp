@@ -184,7 +184,14 @@ namespace cvm::ws
 			}
 			else
 				Q_UNIMPLEMENTED();
-				
+
+			return;
+		}
+
+		if (decoded_message[0] == "chat")
+		{
+			qDebug() << "WS: Chat message sent by user:" << decoded_message[1] << ":" << decoded_message[2] << "in server:" << p_client->requestUrl();
+			emit signal_chat_message_received(decoded_message[1], decoded_message[2], p_client->requestUrl().url());
 			return;
 		}
 
