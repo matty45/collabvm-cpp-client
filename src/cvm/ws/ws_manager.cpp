@@ -24,11 +24,12 @@ namespace cvm::ws
 				socket->close();
 			}
 		}
+		qDebug() << "WS: Cleared all clients!";
 	}
 
 	client_manager::~client_manager()
 	{
-
+		qDebug() << "WS: Shutting down websocket manager!";
 		clear_all_clients();
 	}
 
@@ -91,6 +92,8 @@ namespace cvm::ws
 
 		m_clients.append(socket);
 
+		qDebug() << "WS: Added client:" << url;
+
 	}
 
 	void client_manager::connect_to_servers()
@@ -106,6 +109,7 @@ namespace cvm::ws
 		for (QWebSocket* socket : m_clients)
 			socket->sendTextMessage(msg);
 
+		qDebug() << "WS: Broadcasted message to all servers:" << msg;
 	}
 
 	void client_manager::on_connected()
@@ -117,6 +121,8 @@ namespace cvm::ws
 		//TODO: Should probably request the list elsewhere.
 		// Requesting list
 		p_client->sendTextMessage("4.list;");
+
+		qDebug() << "WS: Connected to server:" << p_client->requestUrl();
 	}
 
 	void client_manager::on_disconnected()
@@ -134,6 +140,7 @@ namespace cvm::ws
 			}
 		}
 
+		qDebug() << "WS: Disconnected from server:" << p_client->requestUrl();
 	}
 
 	void client_manager::on_text_message_received(const QString& message)
@@ -153,6 +160,7 @@ namespace cvm::ws
 		if (decoded_message[0] == "adduser")
 		{
 			for (int i = 2; i < decoded_message.size(); i += 2) {
+				qDebug() << "WS: Adding user:" << decoded_message[i] << "rank:" << decoded_message[i + 1] << "to server:" << p_client->requestUrl();
 				emit signal_adduser_received(decoded_message[i], static_cast<user::rank>(decoded_message[i + 1].toInt()), p_client->requestUrl());
 			}
 			return;
@@ -161,6 +169,7 @@ namespace cvm::ws
 		if (decoded_message[0] == "remuser")
 		{
 			for (int i = 2; i < decoded_message.size(); ++i) {
+				qDebug() << "WS: Removing user:" << decoded_message[i] << "from server:" << p_client->requestUrl();
 				emit signal_remuser_received(decoded_message[i], p_client->requestUrl());
 			}
 			return;
@@ -169,6 +178,7 @@ namespace cvm::ws
 		if (decoded_message[0] == "flag")
 		{
 			for (int i = 1; i < decoded_message.size(); i += 2) {
+				qDebug() << "WS: Adding country flag to user:" << decoded_message[i] << "country code:" << decoded_message[i + 1] << "in server:" << p_client->requestUrl();
 				emit signal_flag_received(decoded_message[i], decoded_message[i + 1], p_client->requestUrl());
 			}
 			return;
@@ -180,19 +190,12 @@ namespace cvm::ws
 			// Add to list then disconnect!
 
 			for (int i = 1; i + 2 < decoded_message.size(); i += 3) {
+				qDebug() << "WS: Adding VM to list:" << decoded_message[i] << "display:" << decoded_message[i + 1] << "server:" << p_client->requestUrl();
 				emit signal_list_received(decoded_message[i], decoded_message[i + 1], decoded_message[i + 2], p_client->requestUrl());
 			}
 
 			if (!m_persistence_mode) // Dont disconnect servers after listing them in the vm list if persistence mode is enabled!
 				p_client->close();
-
-			return;
-		}
-
-		if (decoded_message[0] == "nop")
-		{
-			p_client->sendTextMessage("3.nop;");
-			return;
 		}
 
 	}
