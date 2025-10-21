@@ -24,15 +24,17 @@ namespace cvm::ws
             void broadcast(const QString& msg) const;
 
         signals:
-            void signal_remuser_received(const QString& username, const QUrl& server);
-            void signal_adduser_received(const QString& username, const user::rank& rank, const QUrl& server);
-            void signal_flag_received(const QString& username, const QString& country_code, const QUrl& server);
+            void signal_remove_user_received(const QString& username, const QUrl& server);
+            void signal_add_user_received(const QString& username, const user::rank& rank, const QUrl& server);
+            void signal_rename_user_received(QStringList::parameter_type chars, QStringList::parameter_type string, const QUrl& url);
+            void signal_add_flag_received(const QString& username, const QString& country_code, const QUrl& server);
             void signal_list_received(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server);
             void all_clients_cleared();
 
         private Q_SLOTS:
             void on_connected();
         	void on_disconnected();
+
             void on_text_message_received(const QString& message);
             void on_error_received(QAbstractSocket::SocketError error) const;
             void on_ssl_errors(const QList<QSslError>& errors) const;

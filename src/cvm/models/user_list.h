@@ -27,6 +27,7 @@ namespace cvm::models
 
         Q_INVOKABLE void append(const QString& username, const user::rank& rank, const QUrl& server);
         Q_INVOKABLE void set_country(const QString& username, const QString& country_code, const QUrl& server);
+        Q_INVOKABLE void rename(const QString& old_username, const QString& new_username, const QUrl& server);
         Q_INVOKABLE void remove(const QString& username, const QUrl& server);
         Q_INVOKABLE void remove_row(int row);
         Q_INVOKABLE void clear();

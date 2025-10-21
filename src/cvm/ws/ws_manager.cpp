@@ -161,7 +161,7 @@ namespace cvm::ws
 		{
 			for (int i = 2; i < decoded_message.size(); i += 2) {
 				qDebug() << "WS: Adding user:" << decoded_message[i] << "rank:" << decoded_message[i + 1] << "to server:" << p_client->requestUrl();
-				emit signal_adduser_received(decoded_message[i], static_cast<user::rank>(decoded_message[i + 1].toInt()), p_client->requestUrl());
+				emit signal_add_user_received(decoded_message[i], static_cast<user::rank>(decoded_message[i + 1].toInt()), p_client->requestUrl());
 			}
 			return;
 		}
@@ -170,8 +170,21 @@ namespace cvm::ws
 		{
 			for (int i = 2; i < decoded_message.size(); ++i) {
 				qDebug() << "WS: Removing user:" << decoded_message[i] << "from server:" << p_client->requestUrl();
-				emit signal_remuser_received(decoded_message[i], p_client->requestUrl());
+				emit signal_remove_user_received(decoded_message[i], p_client->requestUrl());
 			}
+			return;
+		}
+
+		if (decoded_message[0] == "rename")
+		{
+			if (decoded_message[1] == "1") //another user in the list is renamed
+			{
+				qDebug() << "WS: Renaming user:" << decoded_message[2] << "to" << decoded_message[3] << "in server:" << p_client->requestUrl();
+				emit signal_rename_user_received(decoded_message[2], decoded_message[3], p_client->requestUrl());
+			}
+			else
+				Q_UNIMPLEMENTED();
+				
 			return;
 		}
 
@@ -179,7 +192,7 @@ namespace cvm::ws
 		{
 			for (int i = 1; i < decoded_message.size(); i += 2) {
 				qDebug() << "WS: Adding country flag to user:" << decoded_message[i] << "country code:" << decoded_message[i + 1] << "in server:" << p_client->requestUrl();
-				emit signal_flag_received(decoded_message[i], decoded_message[i + 1], p_client->requestUrl());
+				emit signal_add_flag_received(decoded_message[i], decoded_message[i + 1], p_client->requestUrl());
 			}
 			return;
 		}

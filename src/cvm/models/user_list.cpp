@@ -116,6 +116,20 @@ namespace cvm::models
 		}
 	}
 
+	void user_list::rename(const QString& old_username, const QString& new_username, const QUrl& server)
+	{
+		for (int i = 0; i < m_user_list.count(); ++i)
+		{
+			if (m_user_list.at(i).m_username == old_username && m_user_list.at(i).m_server == server)
+			{
+				// Update existing entry
+				m_user_list[i].m_username = new_username;
+				emit dataChanged(index(i), index(i));
+				return;
+			}
+		}
+	}
+
 	void user_list::remove(const QString& username, const QUrl& server)
 	{
 		for (int i = 0; i < m_user_list.count(); ++i)
