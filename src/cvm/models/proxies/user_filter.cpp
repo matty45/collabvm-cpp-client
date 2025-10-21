@@ -29,8 +29,6 @@ namespace cvm::models::proxies
 
         user u = userListModel->user_at_index(sourceIndex);
 
-        qDebug() << "ass" << u.m_server.url() << "aaa" << m_filter_server.url();
-
         // Filter by comparing m_server  
         return u.m_server == m_filter_server;
     }

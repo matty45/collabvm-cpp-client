@@ -23,17 +23,17 @@ namespace cvm::models
 		switch (role)
 		{
 
-		case rank_role:
+		case rank_icon_role:
 		{
 			user u = m_user_list.at(index.row());
-			return u.m_rank;
+			return QIcon(QString(":/images/res/rank_icons/%1.png").arg(u.m_rank));  
 		}
 
 
-		case country_role:
+		case country_icon_role:
 		{
 			user u = m_user_list.at(index.row());
-			return u.m_country_code;
+			return QIcon(QString(":/images/res/country_icons/%1.png").arg(u.m_country_code.toLower()));
 		}
 
 
@@ -46,7 +46,6 @@ namespace cvm::models
 		case Qt::ToolTipRole:
 		{
 			user u = m_user_list.at(index.row());
-
 			return QString("Rank: %1").arg(u.m_rank);
 		}
 
@@ -91,6 +90,23 @@ namespace cvm::models
 		beginInsertRows(QModelIndex(), row, row);
 		m_user_list.insert(row, { username, rank, server });
 		endInsertRows();
+	}
+
+	void user_list::set_country(const QString& username, const QString& country_code, const QUrl& server)
+	{
+		for (int i = 0; i < m_user_list.count(); ++i)
+		{
+			if (m_user_list.at(i).m_username == username && m_user_list.at(i).m_server == server)
+			{
+				// Update existing entry
+
+				qDebug() << "Users: Updating user country" << username << country_code << server;
+
+				m_user_list[i].m_country_code = country_code;
+				emit dataChanged(index(i), index(i));
+				return;
+			}
+		}
 	}
 
 	void user_list::remove(const QString& username, const QUrl& server)

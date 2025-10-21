@@ -12,98 +12,73 @@ namespace cvm::delegates
 	}
 
 	void user::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
-	{
-        QString username = index.data(Qt::DisplayRole).toString();
-        int rank = index.data(models::user_list::rank_role).toInt();
-        QString countryCode = index.data(models::user_list::country_role).toString();
-
-        QString countryEmoji = get_country_emoji(countryCode);
-        QString rankEmoji = get_rank_emoji(rank);
-
-        QRect rect = option.rect;
-
-        // Draw selection background  
-        if (option.state & QStyle::State_Selected) {
-            painter->save();
-            painter->setBrush(option.palette.highlight());
-            painter->setPen(Qt::NoPen);
-            painter->drawRect(option.rect);
-            painter->setPen(QPen(option.palette.highlightedText(), 0));
-        }
-
-        QFontMetrics fm(option.font);
-        int emojiWidth = fm.horizontalAdvance("🏳️ "); // Approximate emoji width  
-        int spacing = 8; // Spacing between elements  
-
-        // Calculate positions  
-        QRect countryRect = rect;
-        countryRect.setWidth(emojiWidth);
-
-        QRect rankRect = rect;
-        rankRect.setLeft(rect.right() - emojiWidth);
-
-        QRect usernameRect = rect;
-        usernameRect.setLeft(countryRect.right() + spacing);
-        usernameRect.setRight(rankRect.left() - spacing);
-
-        // Draw country emoji (left)  
-        if (!countryEmoji.isEmpty()) {
-            painter->drawText(countryRect, Qt::AlignLeft | Qt::AlignVCenter, countryEmoji);
-        }
-
-        // Draw username (center)  
-        painter->drawText(usernameRect, Qt::AlignCenter | Qt::AlignVCenter | Qt::TextSingleLine, username);
-
-        // Draw rank emoji (right)  
-        if (!rankEmoji.isEmpty()) {
-            painter->drawText(rankRect, Qt::AlignRight | Qt::AlignVCenter, rankEmoji);
-        }
-
-        if (option.state & QStyle::State_Selected) {
-            painter->restore();
-        }
-	}
-
-	QSize user::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
-	{
-        QString username = index.data(Qt::DisplayRole).toString();
-        QFontMetrics fm(option.font);
-        int emojiWidth = fm.horizontalAdvance("🏳️ ") * 2; // Space for both emojis  
-        int textWidth = fm.horizontalAdvance(username);
-        int spacing = 16;
-
-        return QSize(textWidth + emojiWidth + spacing, fm.height() + 4);
-	}
-
-    QString user::get_rank_emoji(int rank)
     {
-        switch (rank) {
-        case 2: // admin  
-            return "👑";
-        case 3: // moderator  
-            return "🛡️";
-        default:
-            return "";
+        painter->save();
+
+        // Draw background and selection highlight  
+        if (option.state & QStyle::State_Selected) {
+            painter->fillRect(option.rect, option.palette.highlight());
         }
+
+        const int margin = 4;
+        const int iconSize = 16; // or use option.decorationSize.width()  
+
+        // Get data from model  
+        QIcon countryIcon = qvariant_cast<QIcon>(index.data(cvm::models::user_list::country_icon_role));
+        QIcon rankIcon = qvariant_cast<QIcon>(index.data(cvm::models::user_list::rank_icon_role));
+        QString username = index.data(Qt::DisplayRole).toString();
+
+        int x = option.rect.left() + margin;
+        int y = option.rect.top();
+        int height = option.rect.height();
+
+        // Draw country icon on the left  
+        if (!countryIcon.isNull()) {
+            QRect countryRect(x, y + (height - iconSize) / 2, iconSize, iconSize);
+            countryIcon.paint(painter, countryRect);
+            x += iconSize + margin;
+        }
+
+        // Calculate text area (center)  
+        int textWidth = option.rect.right() - x - iconSize - margin * 2;
+        QRect textRect(x, y, textWidth, height);
+
+        // Draw username text  
+        QPalette::ColorGroup cg = (option.state & QStyle::State_Enabled)
+            ? QPalette::Normal : QPalette::Disabled;
+        if (option.state & QStyle::State_Selected) {
+            painter->setPen(option.palette.color(cg, QPalette::HighlightedText));
+        }
+        else {
+            painter->setPen(option.palette.color(cg, QPalette::Text));
+        }
+        painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, username);
+
+        // Draw rank icon on the right  
+        if (!rankIcon.isNull()) {
+            QRect rankRect(option.rect.right() - iconSize - margin,
+                y + (height - iconSize) / 2, iconSize, iconSize);
+            rankIcon.paint(painter, rankRect);
+        }
+
+        painter->restore();
     }
 
-    QString user::get_country_emoji(const QString& countryCode)
+	QSize user::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
     {
-        if (countryCode.length() != 2) {
-            return "🌐"; // Default globe emoji  
-        }
+        const int margin = 4;
+        const int iconSize = 16;
 
-        // Convert country code to regional indicator symbols  
-        // e.g., "US" -> 🇺🇸 (U+1F1FA U+1F1F8)  
-        QString emoji;
-        for (QChar c : countryCode.toUpper()) {
-            if (c >= 'A' && c <= 'Z') {
-                // Regional indicator symbol letter A = U+1F1E6  
-                emoji += QChar(0xD83C); // High surrogate  
-                emoji += QChar(0xDDE6 + (c.unicode() - 'A')); // Low surrogate  
-            }
-        }
-        return emoji.isEmpty() ? "🌐" : emoji;
+        // Get username text  
+        QString username = index.data(Qt::DisplayRole).toString();
+        QFontMetrics fm(option.font);
+        int textWidth = fm.horizontalAdvance(username);
+
+        // Calculate total width: left icon + margin + text + margin + right icon + margins  
+        int width = iconSize + margin + textWidth + margin + iconSize + margin * 2;
+        int height = qMax(iconSize, fm.height()) + margin * 2;
+
+        return QSize(width, height);
     }
 
 }

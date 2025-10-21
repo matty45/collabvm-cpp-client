@@ -42,6 +42,7 @@ main_window::main_window(QWidget* parent)
 	connect(m_c_manager, &cvm::ws::client_manager::signal_list_received, m_vm_list, &cvm::models::vm_list::append);
 	connect(m_c_manager, &cvm::ws::client_manager::signal_adduser_received,m_user_list, &cvm::models::user_list::append);
 	connect(m_c_manager, &cvm::ws::client_manager::signal_remuser_received, m_user_list, &cvm::models::user_list::remove);
+	connect(m_c_manager, &cvm::ws::client_manager::signal_flag_received, m_user_list, &cvm::models::user_list::set_country);
 
 	// Open settings logic
 	connect(m_ui->action_open_settings, &QAction::triggered, this, [this] {

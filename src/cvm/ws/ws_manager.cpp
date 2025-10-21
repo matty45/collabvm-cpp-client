@@ -173,6 +173,14 @@ namespace cvm::ws
 			return;
 		}
 
+		if (decoded_message[0] == "flag")
+		{
+			for (int i = 1; i < decoded_message.size(); i += 2) {
+				emit signal_flag_received(decoded_message[i], decoded_message[i + 1], p_client->requestUrl());
+			}
+			return;
+		}
+
 		//TODO: might be possible to skip sending the opcode through these handlers as its redundant?
 		if (decoded_message[0] == "list")
 		{

@@ -18,8 +18,5 @@ namespace cvm::delegates
         QSize sizeHint(const QStyleOptionViewItem& option,
             const QModelIndex& index) const override;
 
-    private:
-        static QString get_rank_emoji(int rank);
-        static QString get_country_emoji(const QString& countryCode);
     };
 }
