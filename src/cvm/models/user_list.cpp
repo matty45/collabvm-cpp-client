@@ -46,7 +46,7 @@ namespace cvm::models
 		case Qt::ToolTipRole:
 		{
 			user u = m_user_list.at(index.row());
-			return QString("Rank: %1").arg(u.m_rank);
+			return QString("Rank: %1 Country Code: %2").arg(u.m_rank).arg(u.m_country_code);
 		}
 
 		case Qt::TextAlignmentRole:
