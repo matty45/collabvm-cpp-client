@@ -21,28 +21,16 @@ namespace cvm::models
 		Q_ASSERT(index.row() <= m_user_list.size());
 
 
-		//switch (role)
-		//{
-		//case Qt::DecorationRole:
-		//{
-		//	vm vm = m_user_list.at(index.row());
-		//	return vm.m_thumbnail;
-		//}
+		switch (role)
+		{
 
-		//case Qt::DisplayRole:
-		//{
-		//	vm vm = m_vm_list.at(index.row());
-		//	return vm.m_display_name;
-		//}
+		case Qt::DisplayRole:
+		{
+			user u = m_user_list.at(index.row());
+			return u.m_username;
+		}
 
-		//case Qt::ToolTipRole:
-		//{
-		//	vm vm = m_vm_list.at(index.row());
-
-		//	return QString("Server: %1").arg(vm.m_server.url());
-		//}
-
-		//}
+		}
 
 		return {};
 	}
@@ -58,14 +46,19 @@ namespace cvm::models
 		// Check for duplicates and update if found  
 		for (int i = 0; i < m_user_list.count(); ++i)
 		{
-			if (m_user_list.at(i).m_server == server)
+			if (m_user_list.at(i).m_username == username && m_user_list.at(i).m_server == server)
 			{
-				// Update existing entry  
+				// Update existing entry
+
+				qDebug() << "Users: Updating existing user entry" << username << rank << server;
+
 				m_user_list[i] = { username, rank, server };
 				emit dataChanged(index(i), index(i));
 				return;
 			}
 		}
+
+		qDebug() << "Users: Adding user entry" << username << rank << server;
 
 		int row = 0;
 		while (row < m_user_list.count() && username > m_user_list.at(row).m_username)

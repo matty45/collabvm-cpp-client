@@ -1,15 +1,16 @@
 #include "main_window.h"
 
 #include <QMessageBox>
+#include <QSortFilterProxyModel>
 
 #include "ui_main_window.h"
 #include "settings/settings_dialog.h"
 #include "src/cvm/models/user_list.h"
 #include "src/cvm/models/delegates/vm_delegate.h"
+#include "src/cvm/models/proxies/user_filter_proxy.h"
 #include "src/cvm/ws/ws_manager.h"
 #include "src/settings/settings_manager.h"
 #include "vms/vm_window.h"
-
 
 main_window::main_window(QWidget* parent)
 	: QMainWindow(parent), m_ui(new Ui::main_window)
@@ -106,7 +107,7 @@ void main_window::on_vm_activated(const QModelIndex& index) {
 
 
     // Create new window  
-    vm_window* vm_w = new vm_window(vm_data);
+    vm_window* vm_w = new vm_window(vm_data,m_user_list);
     m_open_vm_windows[vm_data.m_id] = vm_w;
 
     // Clean up when window closes  

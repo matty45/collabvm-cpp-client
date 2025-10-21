@@ -13,6 +13,11 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QListView" name="user_list_view"/>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

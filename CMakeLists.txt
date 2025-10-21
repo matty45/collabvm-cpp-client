@@ -28,6 +28,7 @@ set(SOURCE_FILES
     src/cvm/models/vm_list.cpp
     src/cvm/models/user_list.cpp
     src/cvm/models/delegates/vm_delegate.cpp
+    src/cvm/models/proxies/user_filter_proxy.cpp
     src/ui/settings/settings_dialog.cpp
     src/settings/settings_manager.cpp
     src/ui/vms/vm_window.cpp
