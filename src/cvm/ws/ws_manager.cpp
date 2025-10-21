@@ -209,8 +209,10 @@ namespace cvm::ws
 
 			if (!m_persistence_mode) // Dont disconnect servers after listing them in the vm list if persistence mode is enabled!
 				p_client->close();
+			return;
 		}
 
+		qDebug() << "WS: Unknown/Unimplemented message:" << decoded_message;
 	}
 
 	void client_manager::on_error_received(QAbstractSocket::SocketError error) const
