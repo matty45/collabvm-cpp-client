@@ -70,6 +70,7 @@ main_window::main_window(QWidget* parent)
 		}
 
 		m_vm_list->clear();
+		m_user_list->clear();
 
 		if (m_c_manager->m_persistence_mode)
 			m_c_manager->broadcast("4.list;");
@@ -98,7 +99,11 @@ void main_window::on_vm_activated(const QModelIndex& index) {
     }
 
 	if (!m_c_manager->m_persistence_mode)
+	{
+		m_user_list->clear();
 		m_c_manager->add_client(vm_data.m_server);
+	}
+
 
     // Create new window  
     vm_window* vm_w = new vm_window(vm_data);
