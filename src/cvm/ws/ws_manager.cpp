@@ -28,7 +28,6 @@ namespace cvm::ws
 
 	client_manager::~client_manager()
 	{
-		qDebug() << "Shutting down client manager!";
 
 		clear_all_clients();
 	}
@@ -88,9 +87,6 @@ namespace cvm::ws
 		request.setRawHeader("Sec-WebSocket-Protocol", "guacamole");
 
 
-		qDebug() << "WS: Connecting to websocket server:" << url;
-
-
 		socket->open(request);
 
 		m_clients.append(socket);
@@ -110,14 +106,12 @@ namespace cvm::ws
 		for (QWebSocket* socket : m_clients)
 			socket->sendTextMessage(msg);
 
-		qDebug() << "WS: Broadcasted:" << msg;
 	}
 
 	void client_manager::on_connected()
 	{
 		QWebSocket* p_client = qobject_cast<QWebSocket*>(sender());
 
-		qDebug() << "WS: WebSocket connected";
 		connect(p_client, &QWebSocket::textMessageReceived, this, &client_manager::on_text_message_received);
 
 		//TODO: Should probably request the list elsewhere.
@@ -128,7 +122,6 @@ namespace cvm::ws
 	void client_manager::on_disconnected()
 	{
 		QWebSocket* p_client = qobject_cast<QWebSocket*>(sender());
-		qDebug() << "WS: Disconnected from server: " << p_client->requestUrl();
 
 		m_clients.removeAll(p_client);
 		p_client->deleteLater();
@@ -202,7 +195,6 @@ namespace cvm::ws
 			return;
 		}
 
-		qDebug() << "WS: Unimplemented/Unknown message received:" << decoded_message;
 	}
 
 	void client_manager::on_error_received(QAbstractSocket::SocketError error) const

@@ -85,15 +85,12 @@ namespace cvm::models
 			{
 				// Update existing entry
 
-				qDebug() << "Users: Updating existing user entry" << username << rank << server;
-
 				m_user_list[i] = { username, rank, server };
 				emit dataChanged(index(i), index(i));
 				return;
 			}
 		}
 
-		qDebug() << "Users: Adding user entry" << username << rank << server;
 
 		int row = 0;
 		while (row < m_user_list.count() && username > m_user_list.at(row).m_username)
@@ -111,7 +108,6 @@ namespace cvm::models
 			{
 				// Update existing entry
 
-				qDebug() << "Users: Updating user country" << username << country_code << server;
 
 				m_user_list[i].m_country_code = country_code;
 				emit dataChanged(index(i), index(i));
