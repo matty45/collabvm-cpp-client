@@ -210,7 +210,7 @@ namespace cvm::ws
 			// Add to list then disconnect!
 
 			for (int i = 1; i + 2 < decoded_message.size(); i += 3) {
-				qDebug() << "WS: Adding VM to list:" << decoded_message[i] << "display:" << decoded_message[i + 1] << "server:" << p_client->requestUrl();
+				qDebug() << "WS: Adding VM to list:" << decoded_message[i] << "display name:" << decoded_message[i + 1] << "server:" << p_client->requestUrl();
 				emit signal_list_received(decoded_message[i], decoded_message[i + 1], decoded_message[i + 2], p_client->requestUrl());
 			}
 
