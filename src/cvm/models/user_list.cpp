@@ -26,7 +26,7 @@ namespace cvm::models
 		case rank_icon_role:
 		{
 			user u = m_user_list.at(index.row());
-			return QIcon(QString(":/images/res/rank_icons/%1.png").arg(u.m_rank));  
+			return QIcon(QString(":/images/res/rank_icons/%1.png").arg(u.m_rank));
 		}
 
 
@@ -51,7 +51,18 @@ namespace cvm::models
 
 		case Qt::TextAlignmentRole:
 		{
-			return Qt::AlignCenter;
+			return Qt::AlignLeft;
+		}
+
+		case Qt::FontRole:
+		{
+			user u = m_user_list.at(index.row());
+			if (u.m_rank != user::rank::unregistered)
+			{
+				QFont font;
+				font.setBold(true);
+				return font;
+			}
 		}
 
 		}
