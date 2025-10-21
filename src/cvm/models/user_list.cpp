@@ -84,8 +84,8 @@ namespace cvm::models
 			if (m_user_list.at(i).m_username == username && m_user_list.at(i).m_server == server)
 			{
 				// Update existing entry
-
-				m_user_list[i] = { username, rank, server };
+				m_user_list[i].m_username = username;
+				m_user_list[i].m_rank = rank;
 				emit dataChanged(index(i), index(i));
 				return;
 			}
