@@ -27,6 +27,7 @@ set(SOURCE_FILES
     src/cvm/cvm.cpp
     src/cvm/models/vm_list.cpp
     src/cvm/models/user_list.cpp
+    src/cvm/models/chat_message_list.cpp
     src/cvm/models/delegates/vm.cpp
     src/cvm/models/delegates/user.cpp
     src/cvm/models/proxies/user_filter.cpp
