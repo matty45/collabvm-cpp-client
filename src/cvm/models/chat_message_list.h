@@ -2,8 +2,6 @@
 #include <qabstractitemmodel.h>
 #include <qnamespace.h>
 
-#include "src/cvm/cvm.h"
-
 namespace cvm::models
 {
 

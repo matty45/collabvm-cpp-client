@@ -23,17 +23,10 @@ fix_project_version()
 set(SOURCE_FILES
     src/main.cpp
     src/ui/main_window.cpp
-    src/cvm/ws/ws_manager.cpp
     src/cvm/cvm.cpp
-    src/cvm/models/vm_list.cpp
-    src/cvm/models/user_list.cpp
-    src/cvm/models/chat_message_list.cpp
-    src/cvm/models/delegates/vm.cpp
-    src/cvm/models/delegates/user.cpp
-    src/cvm/models/proxies/user_filter.cpp
-    src/ui/settings/settings_dialog.cpp
+    src/cvm/server.cpp  
+    src/cvm/server_manager.cpp  
     src/settings/settings_manager.cpp
-    src/ui/vms/vm_window.cpp
 )
 
 add_project_meta(META_FILES_TO_INCLUDE)

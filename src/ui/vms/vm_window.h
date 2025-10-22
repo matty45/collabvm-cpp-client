@@ -1,5 +1,4 @@
 #pragma once
-#include <QScopedPointer>
 #include <QDialog>
 
 #include "src/cvm/models/proxies/user_filter.h"

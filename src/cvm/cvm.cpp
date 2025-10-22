@@ -3,14 +3,13 @@
 
 namespace cvm
 {
-	user::user(const QString& username, const rank& rank, const QUrl& server)
+	user::user(const QString& username, const rank& rank)
 	{
 		m_rank = rank;
 		m_username = username;
-		m_server = server;
 	}
 
-	vm::vm(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server)
+	vm::vm(const QString& id, const QString& display_name, const QString& thumbnail)
 	{
 		m_id = id;
 		m_display_name = display_name;
@@ -21,7 +20,9 @@ namespace cvm
 
 		m_thumbnail.loadFromData(result.decoded);
 
-		m_server = server;
+	}
 
+	client::client(const QUrl& name) : m_socket(nullptr), m_is_connected(false)
+	{
 	}
 }

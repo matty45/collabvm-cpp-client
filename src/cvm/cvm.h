@@ -2,7 +2,7 @@
 #pragma once
 #include <qpixmap.h>
 #include <qstring.h>
-#include <QUrl>
+#include <QWebSocket>
 
 namespace cvm
 {
@@ -26,22 +26,37 @@ namespace cvm
 
 		QString m_country_code;
 
-		QUrl m_server; // Websocket server url that this user was grabbed from.
-
-		user(const QString& username, const rank& rank, const QUrl& server);
+		user(const QString& username, const rank& rank);
 	};
 
 	struct vm
 	{
-
 		QString m_id;
 
 		QString m_display_name; // Name of the VM, can contain HTML
 
 		QPixmap m_thumbnail; // Image is decoded from base64.
 
-		QUrl m_server; // Websocket server url that was used to connect to this vm.
+		vm(const QString& id, const QString& display_name, const QString& thumbnail);
+	};
 
-		vm(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server);
+	struct chat_message
+	{
+		user* sender;
+
+		QString message;
+	};
+
+	struct client
+	{
+		QUrl m_url;
+
+		QList<vm> m_vms;
+		QList<user> m_users;
+
+		QWebSocket* m_socket;
+		bool m_is_connected;
+
+		client(const QUrl& name);
 	};
 }

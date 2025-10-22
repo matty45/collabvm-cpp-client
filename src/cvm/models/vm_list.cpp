@@ -39,7 +39,7 @@ namespace cvm::models
 		{
 			vm vm = m_vm_list.at(index.row());
 
-			return QString("Server: %1").arg(vm.m_server.url());
+			return QString("Server: %1").arg(vm);
 		}
 
 		}
