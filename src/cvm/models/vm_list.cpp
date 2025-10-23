@@ -38,7 +38,21 @@ namespace cvm::models
 
 		case Qt::ToolTipRole:
 		{
-			return QString("Server: %1").arg(current_vm->m_server->url().url());
+			// Show server information in tooltip  
+			QString tooltip = QString("<b>ID:</b> %1<br>").arg(current_vm->m_id);
+
+			if (current_vm->m_server) {
+				tooltip += QString("<b>URL:</b> %1<br>").arg(current_vm->m_server->url().toString());
+				tooltip += QString("<b>Status:</b> %1<br>").arg( current_vm->m_server->is_connected() ? "Connected" : "Disconnected");
+				if (current_vm->m_server->is_connected())
+					tooltip += QString("<b>Users online:</b> %1<br>").arg(current_vm->m_server->users().size());
+
+			}
+			else {
+				tooltip += "<b>Server:</b> Unknown";
+			}
+
+			return tooltip;
 		}
 
 		}
