@@ -154,11 +154,9 @@ namespace cvm
 	{
 		// Get user from sender param - if the param is null its a system or motd message.
 
-		user* sender_user = m_user_list_model->find_user_by_username(sender);
-
 		qDebug() << "WS: Chat message from" << sender << ":" << message << "in server:" << m_name;
 
-		chat_message* chat_msg = new chat_message{ sender_user->m_username,message };
+		chat_message* chat_msg = new chat_message{ sender,message };
 		m_chat_messages_model->append(chat_msg);
 
 		emit chat_message_created(chat_msg);
