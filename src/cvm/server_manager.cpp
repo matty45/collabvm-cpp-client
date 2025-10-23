@@ -51,6 +51,16 @@ namespace cvm
         return nullptr;
     }
 
+    void server_manager::reconnect_all()
+    {
+        qDebug() << "Reconnecting to all servers...";
+        emit all_servers_reconnecting();
+
+        for (server* srv : m_servers) {
+            srv->reconnect();
+        }
+    }
+
     void server_manager::connect_all_servers()
     {
         for (server* s : m_servers) {

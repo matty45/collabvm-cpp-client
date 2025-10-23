@@ -12,11 +12,22 @@ main_window::main_window(QWidget* parent)
 
 	m_ui->setupUi(this);
 
+
 	// Create settings manager
 	m_settings_manager = new settings_manager(this);
 
 	// Create server manager
 	m_server_manager = new cvm::server_manager(this);
+
+	connect(m_ui->action_refresh_all_servers, &QAction::triggered, [this]()
+		{
+			m_vm_list_model->clear();
+
+			m_server_manager->reconnect_all();
+		});
+
+	//Load persistence mode setting
+	m_server_manager->m_persistence_mode = m_settings_manager->get_persistence_mode();
 
 	// Setup VM list.
 	m_vm_list_model = new cvm::models::vm_list(this);
@@ -30,7 +41,6 @@ main_window::main_window(QWidget* parent)
 	}
 
 
-	// Connect each server's vm_added signal to the model  
 	for (cvm::server* server : m_server_manager->servers()) {
 		// Connect server signals to update the VM list  
 		connect(server, &cvm::server::vm_added, m_vm_list_model, &cvm::models::vm_list::append);

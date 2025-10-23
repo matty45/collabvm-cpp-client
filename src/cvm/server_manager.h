@@ -13,6 +13,8 @@ namespace cvm
         explicit server_manager(QObject* parent = nullptr);
         ~server_manager();
 
+        bool m_persistence_mode; // Persistence mode lets the user choose between keeping persistent connections after vms have been listed or to disconnect from them all once they have been listed.
+
         // Server management  
         server* add_server(const QUrl& url);
         void remove_server(const QUrl& url);
@@ -22,6 +24,7 @@ namespace cvm
         // Global operations  
         void connect_all_servers();
         void disconnect_all_servers();
+        void reconnect_all();
 
         // Global queries across all servers  
         QList<vm*> all_vms() const;
@@ -32,6 +35,7 @@ namespace cvm
     signals:
         void server_added(server* server);
         void server_removed(const QUrl& url);
+        void all_servers_reconnecting();
 
     private:
         QList<server*> m_servers;

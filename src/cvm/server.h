@@ -42,6 +42,7 @@ namespace cvm
 
         // Connection management  
         void connect_to_server();
+        void reconnect();
         void disconnect_from_server();
 
     signals:

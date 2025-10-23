@@ -194,7 +194,14 @@ namespace cvm
         qDebug() << "WS: Connecting to server:" << m_url;  
         m_websocket->open(request);  
     }  
-      
+
+    void server::reconnect()
+    {
+        qDebug() << "WS: Reconnecting to server:" << m_name;
+        disconnect_from_server();
+        connect_to_server();
+    }
+
     void server::disconnect_from_server()  
     {  
         if (m_websocket) {  
@@ -319,7 +326,7 @@ namespace cvm
         // Format: list, id1, name1, thumb1, id2, name2, thumb2, ...  
         for (int i = 1; i + 2 < decoded.size(); i += 3) {  
             add_vm(decoded[i], decoded[i + 1], decoded[i + 2]);  
-        }  
+        }
     }  
 
     void server::handle_flag_message(const QStringList& decoded)
