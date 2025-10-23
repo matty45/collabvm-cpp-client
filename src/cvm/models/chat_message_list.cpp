@@ -28,7 +28,7 @@ namespace cvm::models
 
 		case Qt::DisplayRole:
 		{
-			return QString("%1 : %2").arg(msg->sender->m_username).arg(msg->message);
+			return QString("%1 : %2").arg(msg->sender).arg(msg->message);
 		}
 
 		}

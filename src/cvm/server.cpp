@@ -89,7 +89,7 @@ namespace cvm
 		user* u = m_user_list_model->find_user_by_username(username);
 		if (u) {
 			u->m_rank = rank;
-			qDebug() << "WS: Updating rank for user " << username << "to:" << rank << "in server" << m_name;
+			qDebug() << "WS: Updating rank for user" << username << "to:" << rank << "in server" << m_name;
 			emit user_updated(u);
 		}
 	}
@@ -158,7 +158,7 @@ namespace cvm
 
 		qDebug() << "WS: Chat message from" << sender << ":" << message << "in server:" << m_name;
 
-		chat_message* chat_msg = new chat_message{ sender_user,message };
+		chat_message* chat_msg = new chat_message{ sender_user->m_username,message };
 		m_chat_messages_model->append(chat_msg);
 
 		emit chat_message_created(chat_msg);

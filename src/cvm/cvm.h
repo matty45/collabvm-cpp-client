@@ -44,7 +44,7 @@ namespace cvm
 
 	struct chat_message
 	{
-		user* sender;
+		QString sender;
 
 		QString message;
 	};
