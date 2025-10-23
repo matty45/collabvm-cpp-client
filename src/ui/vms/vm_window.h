@@ -1,8 +1,6 @@
 #pragma once
 #include <QDialog>
 
-#include "src/cvm/models/proxies/user_filter.h"
-
 namespace Ui
 {
     class vm_window;
@@ -15,7 +13,6 @@ public:
     explicit vm_window(const cvm::vm* vm, bool persistence_mode, QWidget* parent = nullptr);
     virtual ~vm_window();
 
-    cvm::models::proxies::user_filter* m_user_filter_proxy;
     bool m_persistence_mode;
 
 private:

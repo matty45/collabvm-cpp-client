@@ -12,99 +12,65 @@ namespace cvm::models
 
 	int chat_message_list::rowCount(const QModelIndex&) const
 	{
-		return m_chat_message_list.size();
+		return m_chat_message_qlist.size();
 	}
 
 	QVariant chat_message_list::data(const QModelIndex& index, int role) const
 	{
 		Q_ASSERT(index.isValid());
-		Q_ASSERT(index.row() <= m_chat_message_list.size());
+		Q_ASSERT(index.row() <= m_chat_message_qlist.size());
 
-		/*switch (role)
+
+		chat_message* msg = m_chat_message_qlist.at(index.row());
+
+		switch (role)
 		{
-
-		case rank_icon_role:
-		{
-			user u = m_user_list.at(index.row());
-			return QIcon(QString(":/images/res/rank_icons/%1.png").arg(u.m_rank));
-		}
-
-
-		case country_icon_role:
-		{
-			user u = m_user_list.at(index.row());
-			return QIcon(QString(":/images/res/country_icons/%1.png").arg(u.m_country_code.toLower()));
-		}
-
 
 		case Qt::DisplayRole:
 		{
-			user u = m_user_list.at(index.row());
-			return u.m_username;
+			return QString("%1 : %2").arg(msg->sender->m_username).arg(msg->message);
 		}
 
-		case Qt::ToolTipRole:
-		{
-			user u = m_user_list.at(index.row());
-			return QString("Rank: %1").arg(u.m_rank);
 		}
-
-		case Qt::TextAlignmentRole:
-		{
-			return Qt::AlignLeft;
-		}
-
-		case Qt::FontRole:
-		{
-			user u = m_user_list.at(index.row());
-			if (u.m_rank != user::rank::unregistered)
-			{
-				QFont font;
-				font.setBold(true);
-				return font;
-			}
-		}
-
-		}*/
 
 		return {};
 	}
 
-	std::tuple<QString, QString, QString> chat_message_list::message_at_index(const QModelIndex& index) const
+	chat_message* chat_message_list::message_at_index(const QModelIndex& index) const
 	{
-		return m_chat_message_list.at(index.row());
+		return m_chat_message_qlist.at(index.row());
 	}
 
-	void chat_message_list::append(const QString& username, const QString& message, const QUrl& server)
+	void chat_message_list::append(chat_message* message)
 	{
 		int row = 0;
-		while (row < m_chat_message_list.count())
+		while (row < m_chat_message_qlist.count())
 			++row;
 		beginInsertRows(QModelIndex(), row, row);
-		m_chat_message_list.insert(row, { username, message, server.url() });
+		m_chat_message_qlist.insert(row, message);
 		endInsertRows();
 	}
 
 	void chat_message_list::remove_row(int row)
 	{
-		if (row < 0 || row >= m_chat_message_list.count())
+		if (row < 0 || row >= m_chat_message_qlist.count())
 			return;
 
 		beginRemoveRows(QModelIndex(), row, row);
-		m_chat_message_list.removeAt(row);
+		m_chat_message_qlist.removeAt(row);
 		endRemoveRows();
 	}
 
 	void chat_message_list::clear()
 	{
-		if (m_chat_message_list.isEmpty())
+		if (m_chat_message_qlist.isEmpty())
 			return;
 
 		beginResetModel();
-		m_chat_message_list.clear();
+		m_chat_message_qlist.clear();
 		endResetModel();
 
-		m_chat_message_list.squeeze();
+		m_chat_message_qlist.squeeze();
 	}
 }
 

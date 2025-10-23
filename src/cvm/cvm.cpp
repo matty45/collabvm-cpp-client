@@ -7,7 +7,6 @@ namespace cvm
 	{
 		m_rank = rank;
 		m_username = username;
-		m_server = server;
 	}
 
 	vm::vm(const QString& id, const QString& display_name, const QString& thumbnail, server* server)

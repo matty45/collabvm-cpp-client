@@ -26,8 +26,6 @@ namespace cvm
 
 		QString m_country_code;
 
-		server* m_server; // Pointer to parent server  
-
 		user(const QString& username, const rank& rank, server* server);
 	};
 
@@ -49,7 +47,5 @@ namespace cvm
 		user* sender;
 
 		QString message;
-
-		server* m_server; // Pointer to parent server  
 	};
 }

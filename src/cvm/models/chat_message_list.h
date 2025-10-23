@@ -21,14 +21,14 @@ namespace cvm::models
         int rowCount(const QModelIndex& parent = QModelIndex()) const override;
         QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
-        std::tuple<QString, QString, QString> message_at_index(const QModelIndex& index) const;
+        chat_message* message_at_index(const QModelIndex& index) const;
 
-        Q_INVOKABLE void append(const QString& username, const QString& message, const QUrl& server);
+        Q_INVOKABLE void append(chat_message* message);
         Q_INVOKABLE void remove_row(int row);
         Q_INVOKABLE void clear();
 
     private:
-        QList<std::tuple<QString, QString, QString>> m_chat_message_list; //Probably not the best variable type to store these.
+        QList<chat_message*> m_chat_message_qlist; //Probably not the best variable type to store these.
     };
 
 }

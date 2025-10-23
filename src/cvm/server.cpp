@@ -10,7 +10,9 @@ namespace cvm
 		, m_url(url)
 		, m_name(url.toString())
 		, m_is_connected(false),
-		  m_user_list_model(new models::user_list(this))
+		m_user_list_model(new models::user_list(this)),
+		m_chat_messages_model(new models::chat_message_list(this))
+
 	{
 		// Extract server name from URL if possible  
 		QString path = url.path();
@@ -24,7 +26,7 @@ namespace cvm
 		}
 	}
 
-	server::~server()
+		server::~server()
 	{
 		disconnect_from_server();
 		clear_vms();
@@ -156,16 +158,15 @@ namespace cvm
 
 		qDebug() << "WS: Chat message from" << sender << ":" << message << "in server:" << m_name;
 
-		chat_message* chat_msg = new chat_message{ sender_user,message,this };
-		m_chat_messages.append(chat_msg);
+		chat_message* chat_msg = new chat_message{ sender_user,message };
+		m_chat_messages_model->append(chat_msg);
 
 		emit chat_message_created(chat_msg);
 	}
 
 	void server::clear_chat_messages()
 	{
-		qDeleteAll(m_chat_messages);
-		m_chat_messages.clear();
+		m_chat_messages_model->clear();
 		emit chat_messages_cleared();
 	}
 
@@ -188,7 +189,7 @@ namespace cvm
 		connect(m_websocket, &QWebSocket::disconnected, this, &server::on_websocket_disconnected);
 		connect(m_websocket, &QWebSocket::errorOccurred, this, &server::on_websocket_error);
 		connect(m_websocket, QOverload<const QList<QSslError>&>::of(&QWebSocket::sslErrors),
-		        this, &server::on_ssl_errors);
+			this, &server::on_ssl_errors);
 		connect(m_websocket, &QWebSocket::textMessageReceived, this, &server::on_text_message_received);
 
 		// Prepare request  
@@ -238,7 +239,7 @@ namespace cvm
 			// Request VM list  
 			send_message("4.list;");
 		}
-		
+
 	}
 
 	void server::on_websocket_disconnected()

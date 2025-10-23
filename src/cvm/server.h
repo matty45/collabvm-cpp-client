@@ -4,6 +4,7 @@
 #include <QUrl>  
 #include <QtWebSockets/QWebSocket>
 
+#include "models/chat_message_list.h"
 #include "models/user_list.h"
 
 namespace cvm
@@ -22,6 +23,7 @@ namespace cvm
         QString name() const { return m_name; }
         QList<vm*> vms() const { return m_vms; }
         models::user_list* user_model() const { return m_user_list_model; }
+        models::chat_message_list* chat_model() const { return m_chat_messages_model; }
         int user_count() const { return m_user_count; }
         bool is_connected() const { return m_is_connected; }
 
@@ -90,7 +92,7 @@ namespace cvm
         bool m_skip_request_list = false; // Option to skip vm listing on connect.
         QList<vm*> m_vms;
         models::user_list* m_user_list_model;
-        QList<chat_message*> m_chat_messages;
+        models::chat_message_list* m_chat_messages_model;
 
 
         // Helper methods
