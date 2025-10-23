@@ -10,12 +10,12 @@ namespace cvm::models::proxies
 
     public:
         user_filter(QObject* parent = nullptr);
-        void set_filter_server(const QUrl& server);
+        void set_filter_server(server* server);
 
     protected:
         bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
 
     private:
-        QUrl m_filter_server;
+        server* m_filter_server;
     };
 }

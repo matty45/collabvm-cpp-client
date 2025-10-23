@@ -3,10 +3,11 @@
 
 namespace cvm
 {
-	user::user(const QString& username, const rank& rank)
+	user::user(const QString& username, const rank& rank, server* server)
 	{
 		m_rank = rank;
 		m_username = username;
+		m_server = server;
 	}
 
 	vm::vm(const QString& id, const QString& display_name, const QString& thumbnail, server* server)

@@ -23,17 +23,14 @@ namespace cvm::models
         int rowCount(const QModelIndex& parent = QModelIndex()) const override;
         QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
-        user user_at_index(const QModelIndex& index) const;
+        user* user_at_index(const QModelIndex& index) const;
 
-        Q_INVOKABLE void append(const QString& username, const user::rank& rank, const QUrl& server);
-        Q_INVOKABLE void set_country(const QString& username, const QString& country_code, const QUrl& server);
-        Q_INVOKABLE void rename(const QString& old_username, const QString& new_username, const QUrl& server);
-        Q_INVOKABLE void remove(const QString& username, const QUrl& server);
-        Q_INVOKABLE void remove_row(int row);
+        Q_INVOKABLE void append(user* user);
+        Q_INVOKABLE void remove(const user* marked_for_death);
         Q_INVOKABLE void clear();
 
     private:
-        QList<user> m_user_list;
+        QList<user*> m_user_list;
     };
 
 }

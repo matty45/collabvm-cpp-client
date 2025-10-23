@@ -40,16 +40,9 @@ namespace cvm::models
 		{
 			// Show server information in tooltip  
 			QString tooltip = QString("<b>ID:</b> %1<br>").arg(current_vm->m_id);
-
-			if (current_vm->m_server) {
-				tooltip += QString("<b>URL:</b> %1<br>").arg(current_vm->m_server->url().toString());
-				tooltip += QString("<b>Status:</b> %1<br>").arg( current_vm->m_server->is_connected() ? "Connected" : "Disconnected");
-				tooltip += QString("<b>Users online:</b> %1<br>").arg(current_vm->m_server->user_count());
-
-			}
-			else {
-				tooltip += "<b>Server:</b> Unknown";
-			}
+			tooltip += QString("<b>URL:</b> %1<br>").arg(current_vm->m_server->url().toString());
+			tooltip += QString("<b>Status:</b> %1<br>").arg(current_vm->m_server->is_connected() ? "Connected" : "Disconnected");
+			tooltip += QString("<b>Users online:</b> %1<br>").arg(current_vm->m_server->users().size());
 
 			return tooltip;
 		}
@@ -69,7 +62,7 @@ namespace cvm::models
 
 		if (!vm)
 			return;
-		
+
 
 		int row = 0;
 		while (row < m_vm_list.count() && vm->m_id > m_vm_list.at(row)->m_id)

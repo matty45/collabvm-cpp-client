@@ -97,9 +97,8 @@ namespace cvm
         }  
           
         // Create new user  
-        user* new_user = new user(username, rank);  
+        user* new_user = new user(username, rank, this);  
         m_users.append(new_user);
-        m_user_count++;
           
         emit user_joined(new_user);  
           
@@ -111,9 +110,8 @@ namespace cvm
         for (int i = 0; i < m_users.size(); ++i) {  
             if (m_users[i]->m_username == username) {  
                 user* removed_user = m_users.takeAt(i);  
-                emit user_left(username);  
+                emit user_left(removed_user);
                 delete removed_user;
-                m_user_count--;
                 qDebug() << "WS: User" << username << "left server" << m_name;  
                 return;  
             }  
@@ -303,7 +301,7 @@ namespace cvm
 
         // Handle rename (user renamed themselves)  
         if (opcode == "rename") {
-            handle_remuser_message(decoded);
+            handle_rename_message(decoded);
             return;
         }
 

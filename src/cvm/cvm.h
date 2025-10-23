@@ -28,7 +28,7 @@ namespace cvm
 
 		server* m_server; // Pointer to parent server  
 
-		user(const QString& username, const rank& rank);
+		user(const QString& username, const rank& rank, server* server);
 	};
 
 	struct vm

@@ -20,7 +20,6 @@ namespace cvm
         QString name() const { return m_name; }
         QList<vm*> vms() const { return m_vms; }
         QList<user*> users() const { return m_users; }
-        int user_count() const { return m_user_count; }
         bool is_connected() const { return m_is_connected; }
 
         // VM management  
@@ -62,7 +61,7 @@ namespace cvm
 
         // User signals  
         void user_joined(user* user);
-        void user_left(const QString& username);
+        void user_left(user* user);
         void user_updated(user* user);
         void users_cleared();
 
@@ -76,7 +75,6 @@ namespace cvm
         void on_websocket_error(QAbstractSocket::SocketError error);
         void on_ssl_errors(const QList<QSslError>& errors) const;
         void on_text_message_received(const QString& message);
-        void handle_chat_message(const QStringList& decoded);
 
     private:
         // WebSocket connection  
@@ -86,12 +84,12 @@ namespace cvm
         bool m_is_connected;
 
         // Data storage
-        int m_user_count = 0;
         QList<vm*> m_vms;
         QList<user*> m_users;
         QList<chat_message*> m_chat_messages;
 
-        // Helper methods  
+        // Helper methods
+        void handle_chat_message(const QStringList& decoded);
         void handle_list_message(const QStringList& decoded);
         void handle_flag_message(const QStringList& decoded);
         void handle_adduser_message(const QStringList& decoded);
