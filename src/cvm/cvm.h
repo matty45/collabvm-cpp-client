@@ -2,10 +2,10 @@
 #pragma once
 #include <qpixmap.h>
 #include <qstring.h>
-#include <QUrl>
 
 namespace cvm
 {
+	class server;
 
 	//TODO: Should i make any of these members private or keep them public? I don't know.
 
@@ -26,22 +26,30 @@ namespace cvm
 
 		QString m_country_code;
 
-		QUrl m_server; // Websocket server url that this user was grabbed from.
+		server* m_server; // Pointer to parent server  
 
-		user(const QString& username, const rank& rank, const QUrl& server);
+		user(const QString& username, const rank& rank);
 	};
 
 	struct vm
 	{
-
 		QString m_id;
 
 		QString m_display_name; // Name of the VM, can contain HTML
 
 		QPixmap m_thumbnail; // Image is decoded from base64.
 
-		QUrl m_server; // Websocket server url that was used to connect to this vm.
+		server* m_server; // Pointer to parent server  
 
-		vm(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server);
+		vm(const QString& id, const QString& display_name, const QString& thumbnail, server* server);
+	};
+
+	struct chat_message
+	{
+		user* sender;
+
+		QString message;
+
+		server* m_server; // Pointer to parent server  
 	};
 }

@@ -17,14 +17,14 @@ namespace cvm::models
         int rowCount(const QModelIndex& parent = QModelIndex()) const override;
         QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
-        vm vm_at_index(const QModelIndex& index) const;
+        vm* vm_at_index(const QModelIndex& index) const;
 
-        Q_INVOKABLE void append(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server);
-        Q_INVOKABLE void remove(int row);
+        Q_INVOKABLE void append(vm* vm);
+        Q_INVOKABLE void remove(const vm* marked_for_death);
         Q_INVOKABLE void clear();
 
     private:
-        QList<vm> m_vm_list;
+        QList<vm*> m_vm_list;
     };
 
 }

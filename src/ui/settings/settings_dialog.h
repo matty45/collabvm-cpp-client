@@ -1,5 +1,4 @@
 #pragma once
-#include <QScopedPointer>
 #include <QDialog>
 
 namespace Ui

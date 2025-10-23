@@ -3,6 +3,8 @@
 #include <qfont.h>
 #include <QMessageBox>
 
+#include "src/cvm/server.h"
+
 namespace cvm::models
 {
 	vm_list::vm_list(QObject* parent)
@@ -20,26 +22,36 @@ namespace cvm::models
 		Q_ASSERT(index.isValid());
 		Q_ASSERT(index.row() <= m_vm_list.size());
 
+		vm* current_vm = m_vm_list.at(index.row());
 
 		switch (role)
 		{
 		case Qt::DecorationRole:
 		{
-			vm vm = m_vm_list.at(index.row());
-			return vm.m_thumbnail;
+			return current_vm->m_thumbnail;
 		}
 
 		case Qt::DisplayRole:
 		{
-			vm vm = m_vm_list.at(index.row());
-			return vm.m_display_name;
+			return current_vm->m_display_name;
 		}
 
 		case Qt::ToolTipRole:
 		{
-			vm vm = m_vm_list.at(index.row());
+			// Show server information in tooltip  
+			QString tooltip = QString("<b>ID:</b> %1<br>").arg(current_vm->m_id);
 
-			return QString("Server: %1").arg(vm.m_server.url());
+			if (current_vm->m_server) {
+				tooltip += QString("<b>URL:</b> %1<br>").arg(current_vm->m_server->url().toString());
+				tooltip += QString("<b>Status:</b> %1<br>").arg( current_vm->m_server->is_connected() ? "Connected" : "Disconnected");
+				tooltip += QString("<b>Users online:</b> %1<br>").arg(current_vm->m_server->user_count());
+
+			}
+			else {
+				tooltip += "<b>Server:</b> Unknown";
+			}
+
+			return tooltip;
 		}
 
 		}
@@ -47,42 +59,36 @@ namespace cvm::models
 		return {};
 	}
 
-	vm vm_list::vm_at_index(const QModelIndex& index) const
+	vm* vm_list::vm_at_index(const QModelIndex& index) const
 	{
 		return m_vm_list.at(index.row());
 	}
 
-	void vm_list::append(const QString& id, const QString& display_name, const QString& thumbnail, const QUrl& server)
+	void vm_list::append(vm* vm)
 	{
 
-		// Check for duplicates and update if found  
-		for (int i = 0; i < m_vm_list.count(); ++i)
-		{
-			if (m_vm_list.at(i).m_server == server)
-			{
-				// Update existing entry  
-				m_vm_list[i] = { id, display_name, thumbnail,server };
-				emit dataChanged(index(i), index(i));
-				return;
-			}
-		}
+		if (!vm)
+			return;
+		
 
 		int row = 0;
-		while (row < m_vm_list.count() && id > m_vm_list.at(row).m_id)
+		while (row < m_vm_list.count() && vm->m_server > m_vm_list.at(row)->m_server)
 			++row;
 		beginInsertRows(QModelIndex(), row, row);
-		m_vm_list.insert(row, { id, display_name, thumbnail, server });
+		m_vm_list.insert(row, vm);
 		endInsertRows();
 	}
 
-	void vm_list::remove(int row)
+	void vm_list::remove(const vm* marked_for_death)
 	{
-		if (row < 0 || row >= m_vm_list.count())
-			return;
-
-		beginRemoveRows(QModelIndex(), row, row);
-		m_vm_list.removeAt(row);
-		endRemoveRows();
+		for (int i = 0; i < m_vm_list.size(); ++i) {
+			if (m_vm_list[i] == marked_for_death) {
+				beginRemoveRows(QModelIndex(), i, i);
+				m_vm_list.removeAt(i);
+				endRemoveRows();
+				break;
+			}
+		}
 	}
 
 	void vm_list::clear()
