@@ -48,7 +48,7 @@ namespace cvm
         }  
           
         // Create new VM (it becomes owned by this server object)  
-        vm* new_vm = new vm(id, display_name, thumbnail);  
+        vm* new_vm = new vm(id, display_name, thumbnail,this);
         m_vms.append(new_vm);  
           
         emit vm_added(new_vm);  
@@ -61,7 +61,7 @@ namespace cvm
         for (int i = 0; i < m_vms.size(); ++i) {  
             if (m_vms[i]->m_id == id) {  
                 vm* removed_vm = m_vms.takeAt(i);  
-                emit vm_removed(id);  
+                emit vm_removed(removed_vm);
                 delete removed_vm;  
                 qDebug() << "WS: Removed VM" << id << "from server" << m_name;  
                 return;  

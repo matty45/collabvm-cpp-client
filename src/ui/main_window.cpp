@@ -19,7 +19,10 @@ main_window::main_window(QWidget* parent)
 	m_server_manager = new cvm::server_manager(this);
 
 	// Setup VM list.
-	//m_vm_list = new cvm::models::vm_list(this);
+	m_vm_list_model = new cvm::models::vm_list(this);
+	cvm::delegates::vm* delegate = new cvm::delegates::vm(m_ui->vm_list_view);
+	m_ui->vm_list_view->setItemDelegate(delegate);
+	m_ui->vm_list_view->setModel(m_vm_list_model);
 
 	for (QUrl url : m_settings_manager->get_servers())
 	{
@@ -29,10 +32,9 @@ main_window::main_window(QWidget* parent)
 
 	// Connect each server's vm_added signal to the model  
 	for (cvm::server* server : m_server_manager->servers()) {
-		//connect(server, &cvm::server::vm_added, this, [cvm::models::vm_list, server](cvm::vm* vm) {
-		//	m_vm_list->append(vm->m_id, vm->m_display_name,
-		//		QString::fromUtf8(vm->m_thumbnail.toImage().constBits()));
-		//	});
+		// Connect server signals to update the VM list  
+		connect(server, &cvm::server::vm_added, m_vm_list_model, &cvm::models::vm_list::append);
+		connect(server, &cvm::server::vm_removed, m_vm_list_model, &cvm::models::vm_list::remove);
 
 		// Connect to server  
 		server->connect_to_server();

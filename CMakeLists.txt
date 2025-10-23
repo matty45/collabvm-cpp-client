@@ -24,9 +24,11 @@ set(SOURCE_FILES
     src/main.cpp
     src/ui/main_window.cpp
     src/cvm/cvm.cpp
-    src/cvm/server.cpp  
-    src/cvm/server_manager.cpp  
+    src/cvm/server_manager.cpp
+    src/cvm/server.cpp
     src/settings/settings_manager.cpp
+    src/cvm/models/vm_list.cpp
+    src/cvm/models/delegates/vm.cpp
 )
 
 add_project_meta(META_FILES_TO_INCLUDE)

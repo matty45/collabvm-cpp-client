@@ -22,7 +22,7 @@ public:
 
     cvm::server_manager* m_server_manager;
 
-    //cvm::models::vm_list* m_vm_list;
+    cvm::models::vm_list* m_vm_list_model;
 
 
 

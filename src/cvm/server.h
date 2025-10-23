@@ -1,13 +1,13 @@
 #pragma once  
-#include <QObject>  
 #include <QList>  
+#include <QObject>  
 #include <QUrl>  
-#include <QtWebSockets/QWebSocket>  
-#include "cvm.h"  
+#include <QtWebSockets/QWebSocket>
 
 namespace cvm
 {
-    class server : public QObject
+
+	class server : public QObject
     {
         Q_OBJECT
 
@@ -52,7 +52,7 @@ namespace cvm
 
         // VM signals  
         void vm_added(vm* vm);
-        void vm_removed(const QString& id);
+        void vm_removed(vm* vm);
         void vms_cleared();
 
         // User signals  
