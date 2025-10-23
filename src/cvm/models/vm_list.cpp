@@ -72,7 +72,7 @@ namespace cvm::models
 		
 
 		int row = 0;
-		while (row < m_vm_list.count() && vm->m_server > m_vm_list.at(row)->m_server)
+		while (row < m_vm_list.count() && vm->m_id > m_vm_list.at(row)->m_id)
 			++row;
 		beginInsertRows(QModelIndex(), row, row);
 		m_vm_list.insert(row, vm);
