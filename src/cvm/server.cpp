@@ -166,7 +166,10 @@ namespace cvm
 
         qDebug() << "WS: Chat message from" << sender << ":" << message << "in server:" << m_name;
 
-        m_chat_messages.append(new chat_message{ sender_user,message,this });
+        chat_message* chat_msg = new chat_message{ sender_user,message,this };
+        m_chat_messages.append(chat_msg);
+
+        emit chat_message_created(chat_msg);
     }
 
     void server::clear_chat_messages()

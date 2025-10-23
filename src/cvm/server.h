@@ -67,6 +67,7 @@ namespace cvm
         void users_cleared();
 
         // Chat message signals
+        void chat_message_created(chat_message* chat_msg);
         void chat_messages_cleared();
 
     private slots:

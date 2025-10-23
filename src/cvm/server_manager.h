@@ -36,7 +36,6 @@ namespace cvm
     signals:
         void server_added(server* server);
         void server_removed(const QUrl& url);
-        void all_servers_reconnecting();
 
     private slots:
         void on_server_vm_list_received() const;
