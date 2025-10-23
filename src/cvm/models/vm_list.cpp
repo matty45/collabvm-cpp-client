@@ -44,8 +44,7 @@ namespace cvm::models
 			if (current_vm->m_server) {
 				tooltip += QString("<b>URL:</b> %1<br>").arg(current_vm->m_server->url().toString());
 				tooltip += QString("<b>Status:</b> %1<br>").arg( current_vm->m_server->is_connected() ? "Connected" : "Disconnected");
-				if (current_vm->m_server->is_connected())
-					tooltip += QString("<b>Users online:</b> %1<br>").arg(current_vm->m_server->users().size());
+				tooltip += QString("<b>Users online:</b> %1<br>").arg(current_vm->m_server->user_count());
 
 			}
 			else {

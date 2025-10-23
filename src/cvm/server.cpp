@@ -25,7 +25,8 @@ namespace cvm
     {  
         disconnect_from_server();  
         clear_vms();  
-        clear_users();  
+        clear_users();
+        clear_chat_messages();
     }  
       
     // VM Management  
@@ -97,7 +98,8 @@ namespace cvm
           
         // Create new user  
         user* new_user = new user(username, rank);  
-        m_users.append(new_user);  
+        m_users.append(new_user);
+        m_user_count++;
           
         emit user_joined(new_user);  
           
@@ -110,7 +112,8 @@ namespace cvm
             if (m_users[i]->m_username == username) {  
                 user* removed_user = m_users.takeAt(i);  
                 emit user_left(username);  
-                delete removed_user;  
+                delete removed_user;
+                m_user_count--;
                 qDebug() << "WS: User" << username << "left server" << m_name;  
                 return;  
             }  
@@ -163,7 +166,14 @@ namespace cvm
 
         qDebug() << "WS: Chat message from" << sender << ":" << message << "in server:" << m_name;
 
-        m_chat_messages.append({ sender_user,message });
+        m_chat_messages.append(new chat_message{ sender_user,message,this });
+    }
+
+    void server::clear_chat_messages()
+    {
+        qDeleteAll(m_chat_messages);
+        m_chat_messages.clear();
+        emit chat_messages_cleared();
     }
 
     // Connection Management  
@@ -327,6 +337,8 @@ namespace cvm
         for (int i = 1; i + 2 < decoded.size(); i += 3) {  
             add_vm(decoded[i], decoded[i + 1], decoded[i + 2]);  
         }
+
+        emit vm_list_received();
     }  
 
     void server::handle_flag_message(const QStringList& decoded)

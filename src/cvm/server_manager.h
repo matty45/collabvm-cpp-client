@@ -15,7 +15,7 @@ namespace cvm
 
         bool m_persistence_mode; // Persistence mode lets the user choose between keeping persistent connections after vms have been listed or to disconnect from them all once they have been listed.
 
-        // Server management  
+        // Server management
         server* add_server(const QUrl& url);
         void remove_server(const QUrl& url);
         server* get_server(const QUrl& url) const;
@@ -23,6 +23,7 @@ namespace cvm
 
         // Global operations  
         void connect_all_servers();
+        void broadcast_message_to_all_servers(const QString& msg);
         void disconnect_all_servers();
         void reconnect_all();
 
@@ -36,6 +37,9 @@ namespace cvm
         void server_added(server* server);
         void server_removed(const QUrl& url);
         void all_servers_reconnecting();
+
+    private slots:
+        void on_server_vm_list_received() const;
 
     private:
         QList<server*> m_servers;

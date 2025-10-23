@@ -3,7 +3,7 @@
 namespace cvm
 {
     server_manager::server_manager(QObject* parent)
-        : QObject(parent)
+	    : QObject(parent), m_persistence_mode(false)
     {
     }
 
@@ -11,6 +11,16 @@ namespace cvm
     {
         disconnect_all_servers();
         qDeleteAll(m_servers);
+    }
+
+    void server_manager::on_server_vm_list_received() const
+    {
+        if (!m_persistence_mode) {
+            server* rip = qobject_cast<server*>(sender());
+            rip->clear_chat_messages();
+            rip->clear_users();
+            rip->disconnect_from_server();
+        }
     }
 
     server* server_manager::add_server(const QUrl& url)
@@ -22,6 +32,8 @@ namespace cvm
         }
 
         server* new_server = new server(url, this);
+        connect(new_server, &server::vm_list_received, this, &server_manager::on_server_vm_list_received);
+
         m_servers.append(new_server);
 
         emit server_added(new_server);
@@ -65,6 +77,13 @@ namespace cvm
     {
         for (server* s : m_servers) {
             s->connect_to_server();
+        }
+    }
+
+    void server_manager::broadcast_message_to_all_servers(const QString& msg)
+    {
+        for (server* s : m_servers) {
+            s->send_message(msg);
         }
     }
 
