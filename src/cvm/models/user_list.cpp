@@ -73,6 +73,18 @@ namespace cvm::models
 		return m_user_list.at(index.row());
 	}
 
+	user* user_list::find_user_by_username(const QString& username) const
+	{
+		for (int i = 0; i < m_user_list.count(); ++i)
+		{
+			if (m_user_list.at(i)->m_username == username)
+			{
+				return m_user_list.at(i);
+			}
+		}
+		return nullptr;
+	}
+
 	void user_list::append(user* user)
 	{
 		if (!user)
@@ -103,6 +115,8 @@ namespace cvm::models
 	{
 		if (m_user_list.isEmpty())
 			return;
+
+		qDeleteAll(m_user_list);
 
 		beginResetModel();
 		m_user_list.clear();

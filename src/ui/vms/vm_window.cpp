@@ -1,18 +1,23 @@
 #include "vm_window.h"
 
 #include "ui_vm_window.h"
+#include "src/cvm/server.h"
 #include "src/cvm/models/delegates/user.h"
 #include "src/cvm/models/proxies/user_filter.h"
 
-vm_window::vm_window(const cvm::vm* vm, QAbstractListModel* user_list_model, QWidget* parent)
+vm_window::vm_window(const cvm::vm* vm, bool persistence_mode, QWidget* parent)
     : QWidget(parent), m_ui(new Ui::vm_window)
 {
+    m_persistence_mode = persistence_mode;
+
+    m_vm = vm;
+
     m_ui->setupUi(this);
 
 	// Set filter
 	m_user_filter_proxy = new cvm::models::proxies::user_filter(this);
-    m_user_filter_proxy->set_filter_server(vm->m_server);
-    m_user_filter_proxy->setSourceModel(user_list_model);
+    m_user_filter_proxy->set_filter_server(m_vm->m_server);
+    m_user_filter_proxy->setSourceModel(m_vm->m_server->user_model());
 
     m_ui->user_list_view->setModel(m_user_filter_proxy);
 
@@ -24,5 +29,7 @@ vm_window::vm_window(const cvm::vm* vm, QAbstractListModel* user_list_model, QWi
 
 vm_window::~vm_window()
 {
+    if (!m_persistence_mode)
+    m_vm->m_server->disconnect_from_server();
 }
 

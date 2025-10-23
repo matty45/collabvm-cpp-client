@@ -4,6 +4,8 @@
 #include <QUrl>  
 #include <QtWebSockets/QWebSocket>
 
+#include "models/user_list.h"
+
 namespace cvm
 {
 
@@ -19,7 +21,8 @@ namespace cvm
         QUrl url() const { return m_url; }
         QString name() const { return m_name; }
         QList<vm*> vms() const { return m_vms; }
-        QList<user*> users() const { return m_users; }
+        models::user_list* user_model() const { return m_user_list_model; }
+        int user_count() const { return m_user_count; }
         bool is_connected() const { return m_is_connected; }
 
         // VM management  
@@ -29,7 +32,6 @@ namespace cvm
         void clear_vms();
 
         // User management  
-        user* get_user(const QString& username) const;
         void update_user_rank(const QString& username, user::rank rank);
         void add_user(const QString& username, user::rank rank);
         void remove_user(const QString& username);
@@ -42,7 +44,7 @@ namespace cvm
         void clear_chat_messages();
 
         // Connection management  
-        void connect_to_server();
+        void connect_to_server(bool skip_list_request = false);
         void reconnect();
         void disconnect_from_server();
         void send_message(const QString& message) const;
@@ -84,9 +86,12 @@ namespace cvm
         bool m_is_connected;
 
         // Data storage
+        int m_user_count = 0;
+        bool m_skip_request_list = false; // Option to skip vm listing on connect.
         QList<vm*> m_vms;
-        QList<user*> m_users;
+        models::user_list* m_user_list_model;
         QList<chat_message*> m_chat_messages;
+
 
         // Helper methods
         void handle_chat_message(const QStringList& decoded);

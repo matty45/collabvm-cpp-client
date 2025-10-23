@@ -24,6 +24,7 @@ namespace cvm::models
         QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
         user* user_at_index(const QModelIndex& index) const;
+        user* find_user_by_username(const QString& username) const;
 
         Q_INVOKABLE void append(user* user);
         Q_INVOKABLE void remove(const user* marked_for_death);

@@ -93,24 +93,6 @@ namespace cvm
         }
     }
 
-    QList<vm*> server_manager::all_vms() const
-    {
-        QList<vm*> result;
-        for (server* s : m_servers) {
-            result.append(s->vms());
-        }
-        return result;
-    }
-
-    QList<user*> server_manager::all_users() const
-    {
-        QList<user*> result;
-        for (server* s : m_servers) {
-            result.append(s->users());
-        }
-        return result;
-    }
-
     int server_manager::total_vm_count() const
     {
         int count = 0;
@@ -124,7 +106,7 @@ namespace cvm
     {
         int count = 0;
         for (server* s : m_servers) {
-            count += s->users().size();
+            count += s->user_model()->rowCount();
         }
         return count;
     }

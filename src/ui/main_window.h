@@ -25,8 +25,6 @@ public:
 
     cvm::models::vm_list* m_vm_list_model;
 
-    cvm::models::user_list* m_user_list_model;
-
     QHash<QString, QWidget*> m_open_vm_windows;
 
 

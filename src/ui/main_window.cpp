@@ -43,9 +43,6 @@ main_window::main_window(QWidget* parent)
 	m_ui->vm_list_view->setItemDelegate(delegate);
 	m_ui->vm_list_view->setModel(m_vm_list_model);
 
-	// Setup user list.
-	m_user_list_model = new cvm::models::user_list(this);
-
 	for (QUrl url : m_settings_manager->get_servers())
 	{
 		m_server_manager->add_server(url);
@@ -56,10 +53,6 @@ main_window::main_window(QWidget* parent)
 		// Connect server signals to update the VM list  
 		connect(server, &cvm::server::vm_added, m_vm_list_model, &cvm::models::vm_list::append);
 		connect(server, &cvm::server::vm_removed, m_vm_list_model, &cvm::models::vm_list::remove);
-
-		// Connect server signals to update the user list
-		connect(server, &cvm::server::user_joined, m_user_list_model, &cvm::models::user_list::append);
-		connect(server, &cvm::server::user_left, m_user_list_model, &cvm::models::user_list::remove);
 
 		// Connect to server  
 		server->connect_to_server();
@@ -79,10 +72,13 @@ void main_window::on_vm_activated(const QModelIndex& index) {
 	}
 
 	if (!m_server_manager->m_persistence_mode)
-		vm_data->m_server->connect_to_server();
+	{
+		vm_data->m_server->connect_to_server(true);
+	}
+		
 
 	// Create new window  
-	vm_window* vm_w = new vm_window(vm_data, m_user_list_model);
+	vm_window* vm_w = new vm_window(vm_data, m_server_manager->m_persistence_mode);
 	m_open_vm_windows[vm_data->m_id] = vm_w;
 
 	// Clean up when window closes  
