@@ -23,7 +23,15 @@ void settings_manager::save_persistence_mode(const bool& toggle) {
 QStringList settings_manager::get_servers() const
 {
 	QStringList defaults = {
-		"wss://userfriendly.aolonline.top/ufvm1"
+		"wss://computernewb.com/collab-vm/vm1",
+		"wss://computernewb.com/collab-vm/vm2",
+		"wss://computernewb.com/collab-vm/vm3",
+		"wss://computernewb.com/collab-vm/vm4",
+		"wss://computernewb.com/collab-vm/vm5",
+		"wss://computernewb.com/collab-vm/vm6",
+		"wss://computernewb.com/collab-vm/vm7",
+		"wss://computernewb.com/collab-vm/vm8",
+		"wss://computernewb.com/collab-vm/vm9"
 
 	};
 	return m_settings.value("Servers/urls", defaults).toStringList();
